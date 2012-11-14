@@ -30,7 +30,17 @@ class Yakindu_Spec(TestCase):
         self.parser._tokenize_content() |should| equal_to([['initially', 'initial_state', 'refrigerator', 'door', 'closed', 'end', 'specification', 'light', 'off', 'end', 'specification', 'thermostat', 'power', 'minimum', 'end'], ['transition', 'opens', 'door', 'end', 'state', 'door', 'opened', 'end', 'specification', 'light', 'turns', 'on', 'end', 'specification', 'thermostat', 'power', 'maximum'], ['transition', 'closes', 'door', 'end', 'state', 'refrigerator', 'door', 'closed', 'end']])
     
     def test_if_tags_was_ordered_by_sent(self):
-        self.parser._order_tags_by_sent() |should| equal_to ([['initial_state', 'end', 'specification'], ['transition', 'end', 'state', 'specification'], ['transition', 'end', 'state']])
+        self.parser._order_tags_by_sent() |should| equal_to([['initial_state', 'end', 'specification'], ['transition', 'end', 'state', 'specification'], ['transition', 'end', 'state']])
+    
+    def test_if_indexes_were_acquired(self):
+        self.parser._indexes_of_process_intersections() |should| equal_to([[1, 5, 9, 14, 6, 10, 0, 3, 7, 12, 4, 8, 13, 0, 3, 8, 4], [1, 5, 9, 14, 6, 10, 0, 3, 7, 12, 4, 8, 13, 0, 3, 8, 4], [1, 5, 9, 14, 6, 10, 0, 3, 7, 12, 4, 8, 13, 0, 3, 8, 4]])
+    
+    def test_if_indexes_were_sorted_by_bigrams(self):
+        self.parser._sort_tag_indexes_bigrams() |should| equal_to([[(0, 0), (0, 1), (1, 3), (3, 3), (3, 4), (4, 4), (4, 5), (5, 6), (6, 7), (7, 8), (8, 8), (8, 9), (9, 10), (10, 12), (12, 13), (13, 14), (14, None)], [(0, 0), (0, 1), (1, 3), (3, 3), (3, 4), (4, 4), (4, 5), (5, 6), (6, 7), (7, 8), (8, 8), (8, 9), (9, 10), (10, 12), (12, 13), (13, 14), (14, None)], [(0, 0), (0, 1), (1, 3), (3, 3), (3, 4), (4, 4), (4, 5), (5, 6), (6, 7), (7, 8), (8, 8), (8, 9), (9, 10), (10, 12), (12, 13), (13, 14), (14, None)]])
+    
+#    def test_if_tags_content_tuples_were_cut_by_sent(self):
+#        self.parser._cut_tag_content_tuples_from_sent(self.parser._sort_tag_indexes_bigrams(), self.parser._tokenize_content()) |should| equal_to([['initially'], ['initial_state', 'refrigerator'], ['door'], ['closed'], ['end'], ['specification'], ['light'], ['off'], ['end'], ['specification', 'thermostat'], ['power'], ['minimum'], ['end']])
+    
     
     def test_if_tmp_file_was_removed(self):
         exists(self.parser._content_directory + '/content.xml') |should_not| equal_to(True)
