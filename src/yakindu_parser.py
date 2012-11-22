@@ -150,8 +150,11 @@ class YakinduParser(object):
         tagger = UnigramTagger(train_sents)
         for sent in self._create_lean_content():
             pos_tagged_content.append(tagger.batch_tag(sent))
+<<<<<<< HEAD
         print 'pos_tagged_content'
         print pos_tagged_content
+=======
+>>>>>>> origin/master
         return pos_tagged_content
         
     def _clean_pos_tagged_content(self, pos_tagged):
@@ -161,6 +164,7 @@ class YakinduParser(object):
                 cleaned_pos_tagged_content.append([w for (w, t) in sent])
             else:
                 cleaned_pos_tagged_content.append([w for (w, t) in sent if t!='VBZ' and t!='VBD'])
+<<<<<<< HEAD
         print 'cleaned_pos_tagged_content'
         print cleaned_pos_tagged_content
         return cleaned_pos_tagged_content
@@ -185,4 +189,13 @@ class YakinduParser(object):
             if chunk[0] in state_tags and fd_content[tuple(chunk[1:])] > 1:
                 chunk[0] = 'initial_state'
         return final_content
+=======
+        return cleaned_pos_tagged_content
+
+    def create_cleaned_content(self):
+        cleaned_content = []
+        for sent in self._pos_tag_lean_content():
+            cleaned_content.append(self._clean_pos_tagged_content(sent))
+        return cleaned_content
+>>>>>>> origin/master
 
