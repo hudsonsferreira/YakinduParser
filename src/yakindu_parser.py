@@ -19,7 +19,7 @@ class YakinduParser(object):
     
     def __init__(self, path):
         if not exists(path) or not self._valid_mimetype(path):
-            raise NameError("File invalid")
+            raise NameError("Invalid file")
         else:
             self._name = basename(path)
             self._path = dirname(path)
@@ -143,7 +143,7 @@ class YakinduParser(object):
         for sent in final_content:
             content.append(map(lambda x: tuple(x[1:]), sent))
             fd_content = FreqDist(list(chain(*content)))
-        for chunk in sent:
-            if chunk[0] in state_tags and fd_content[tuple(chunk[1:])] > 1:
-                chunk[0] = 'initial_state'
+            for chunk in sent:
+                if chunk[0] in state_tags and fd_content[tuple(chunk[1:])] > 1:
+                    chunk[0] = 'initial_state'
         return final_content
