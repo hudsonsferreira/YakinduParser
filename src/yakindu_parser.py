@@ -14,7 +14,7 @@ from itertools import izip, chain
 import magic
 import shutil
 import tempfile
-
+#uagsduiasdanipdpçadsnp
 class YakinduParser(object):
     
     def __init__(self, path):
