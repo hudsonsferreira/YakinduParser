@@ -41,12 +41,9 @@ class YakinduParser(object):
         #import ipdb; ipdb.set_trace()
         raw_content = sub(r'\w+ \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2} ', '', cleaned_text)
         tiny_raw_content = raw_content.lower()
-        print 'tiny raw content'
-        print tiny_raw_content
         return tiny_raw_content
 
     def _remove_directory(self):
-        #import ipdb; ipdb.set_trace()
         shutil.rmtree(self._content_directory)
     
     def _tokenize_content(self):
@@ -61,8 +58,6 @@ class YakinduParser(object):
         for sent in content_words_by_sents:
             clean_sent = [word for word in sent if word not in stopwords]
             tokenized_content.append(clean_sent)
-        print 'tokenized content'
-        print tokenized_content
         return tokenized_content
 
     def _order_tags_by_sent(self):
@@ -75,64 +70,37 @@ class YakinduParser(object):
         for tags_by_sent in tags_into_tokenized_content:
             bigrams_of_tags_by_sent.append(bigrams(tags_by_sent))
             ordered_tags_by_sent.append(list(OrderedSet(tags_by_sent)))
-        print 'ordered_tags_by_sent'
-        print ordered_tags_by_sent
         return ordered_tags_by_sent
 
     def _indexes_of_process_intersections(self):
         ordered_tags_by_sent = self._order_tags_by_sent()
-        indexes_of_ordered_tags_by_process = [[]]* len(ordered_tags_by_sent)
-        for i, index_list in enumerate(indexes_of_ordered_tags_by_process):
-           for tag in ordered_tags_by_sent[i]:
-               index_list.extend([index for index, label in enumerate(self.tokenized_content[i]) if label == tag])
-        print 'indexes_of_ordered_tags_by_process'
-        print indexes_of_ordered_tags_by_process
-        return indexes_of_ordered_tags_by_process
-        
-    def _sort_tag_indexes_bigrams(self):
-        ordered_tags_by_sent = self._order_tags_by_sent()
-        indexes_of_ordered_tags_by_process = [[]]* len(ordered_tags_by_sent)
-        sorted_tag_indexes_bigrams_by_process = []
-
+        indexes_of_ordered_tags_by_process = []
+        for i in range(len(ordered_tags_by_sent)):
+            indexes_of_ordered_tags_by_process.append([])
+#        import ipdb; ipdb.set_trace()
         for i in range(len(ordered_tags_by_sent)):
             for tag in ordered_tags_by_sent[i]:
                 indexes_of_ordered_tags_by_process[i].extend([index for index, label in enumerate(self.tokenized_content[i]) if label == tag])
-#        import ipdb; ipdb.set_trace()
+        return indexes_of_ordered_tags_by_process
         
-#        print 'indexes_of_ordered_tags_by_process'
-#        print indexes_of_ordered_tags_by_process
-#        for i, index_list in enumerate(indexes_of_ordered_tags_by_process):
-#           for tag in ordered_tags_by_sent[i]:
-#               index_list.extend([index for index, label in enumerate(self.tokenized_content[i]) if label == tag])
-#        indexes_of_ordered_tags_by_process = self._indexes_of_process_intersections()
-        print 'indexes_of_ordered_tags_by_process'
-        print indexes_of_ordered_tags_by_process
-        for process_indexes_bigrams in indexes_of_ordered_tags_by_process:
+    def _sort_tag_indexes_bigrams(self):
+        sorted_tag_indexes_bigrams_by_process = []
+        for process_indexes_bigrams in self._indexes_of_process_intersections():
             sorted_tag_indexes_bigrams_by_process.append(bigrams(sorted(process_indexes_bigrams)+[None]))
-        
-        print 'sorted_tag_indexes_bigrams_by_process'
-        print sorted_tag_indexes_bigrams_by_process
         return sorted_tag_indexes_bigrams_by_process
         
     def _cut_tag_content_tuples_from_sent(self, index_set_from_sent, process):
         tag_content_tuples_from_sent = []
-        clean_tag_content_tuples_from_sent = []
         for indexed_tuple in index_set_from_sent:
             tag_content_tuples_from_sent.append(list(process[indexed_tuple[0]:indexed_tuple[1]]))
-        
-        while [] in tag_content_tuples_from_sent:
-            tag_content_tuples_from_sent.remove([])
-        #clean_tag_content_tuples_from_sent.append([item for item in tag_content_tuples_from_sent if item != []])
-        print 'tag_content_tuples_from_sent'
-        print tag_content_tuples_from_sent
+#        while [] in tag_content_tuples_from_sent:
+#            tag_content_tuples_from_sent.remove([])
         return tag_content_tuples_from_sent
-        
+    
     def _take_tagged_content(self, indexes, content):
         tagged_content = []
         for index_set, cont in izip(indexes, content):
             tagged_content.append(self._cut_tag_content_tuples_from_sent(index_set, cont))
-        print "tagged_content"
-        print tagged_content
         return tagged_content
         
     def _create_lean_content(self):
@@ -140,8 +108,8 @@ class YakinduParser(object):
         tagged_content = self._take_tagged_content(self._sort_tag_indexes_bigrams(), self.tokenized_content)
         for sent_tagged_content in tagged_content:
             lean_content.append([tag_content_tuple for tag_content_tuple in sent_tagged_content if tag_content_tuple != ['end',]])
-        print "lean_content"
-        print lean_content
+        while [] in lean_content:
+            lean_content.remove([])
         return lean_content
 
     def _pos_tag_lean_content(self):
@@ -150,8 +118,6 @@ class YakinduParser(object):
         tagger = UnigramTagger(train_sents)
         for sent in self._create_lean_content():
             pos_tagged_content.append(tagger.batch_tag(sent))
-        print 'pos_tagged_content'
-        print pos_tagged_content
         return pos_tagged_content
         
     def _clean_pos_tagged_content(self, pos_tagged):
@@ -161,16 +127,12 @@ class YakinduParser(object):
                 cleaned_pos_tagged_content.append([w for (w, t) in sent])
             else:
                 cleaned_pos_tagged_content.append([w for (w, t) in sent if t!='VBZ' and t!='VBD'])
-        print 'cleaned_pos_tagged_content'
-        print cleaned_pos_tagged_content
         return cleaned_pos_tagged_content
 
     def _create_cleaned_content(self):
         cleaned_content = []
         for sent in self._pos_tag_lean_content():
             cleaned_content.append(self._clean_pos_tagged_content(sent))
-        print 'cleaned_content'
-        print cleaned_content
         return cleaned_content
     
     def exchange_states(self):
@@ -185,4 +147,3 @@ class YakinduParser(object):
             if chunk[0] in state_tags and fd_content[tuple(chunk[1:])] > 1:
                 chunk[0] = 'initial_state'
         return final_content
-

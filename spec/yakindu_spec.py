@@ -79,7 +79,9 @@ class Yakindu_Spec(TestCase):
         
     def test_if_tmp_file_was_removed(self):
         exists(self.parser._content_directory + '/content.xml') |should_not| equal_to(True)
-
+    
+    def test_if_standard_patch_was_generated(self):
+        self.parser._generate__standard_patch() |should| equal_to()
 if __name__ == '__main__':
     unittest.main()
 
