@@ -41,12 +41,18 @@ class YakinduParser(object):
         #import ipdb; ipdb.set_trace()
         raw_content = sub(r'\w+ \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2} ', '', cleaned_text)
         tiny_raw_content = raw_content.lower()
+<<<<<<< HEAD
         print 'tiny raw content'
         print tiny_raw_content
         return tiny_raw_content
 
     def _remove_directory(self):
         #import ipdb; ipdb.set_trace()
+=======
+        return tiny_raw_content
+
+    def _remove_directory(self):
+>>>>>>> cd13e7b9699055921d171eb56a59c3ad0b9e5f23
         shutil.rmtree(self._content_directory)
     
     def _tokenize_content(self):
@@ -75,12 +81,16 @@ class YakinduParser(object):
         for tags_by_sent in tags_into_tokenized_content:
             bigrams_of_tags_by_sent.append(bigrams(tags_by_sent))
             ordered_tags_by_sent.append(list(OrderedSet(tags_by_sent)))
+<<<<<<< HEAD
         print 'ordered_tags_by_sent'
         print ordered_tags_by_sent
+=======
+>>>>>>> cd13e7b9699055921d171eb56a59c3ad0b9e5f23
         return ordered_tags_by_sent
 
     def _indexes_of_process_intersections(self):
         ordered_tags_by_sent = self._order_tags_by_sent()
+<<<<<<< HEAD
         indexes_of_ordered_tags_by_process = [[]]* len(ordered_tags_by_sent)
         for i, index_list in enumerate(indexes_of_ordered_tags_by_process):
            for tag in ordered_tags_by_sent[i]:
@@ -112,6 +122,25 @@ class YakinduParser(object):
         
         print 'sorted_tag_indexes_bigrams_by_process'
         print sorted_tag_indexes_bigrams_by_process
+=======
+        #indexes_of_ordered_tags_by_process = [[]] * len(ordered_tags_by_sent)
+        indexes_of_ordered_tags_by_process = []
+        for i in range(len(ordered_tags_by_sent)):
+            indexes_of_ordered_tags_by_process.append([])
+        import ipdb; ipdb.set_trace()
+#        for i, index_list in enumerate(indexes_of_ordered_tags_by_process):
+#           for tag in ordered_tags_by_sent[i]:
+#               index_list.extend([index for index, label in enumerate(self.tokenized_content[i]) if label == tag])
+        for i in range(len(ordered_tags_by_sent)):
+            for tag in ordered_tags_by_sent[i]:
+                indexes_of_ordered_tags_by_process[i].extend([index for index, label in enumerate(self.tokenized_content[i]) if label == tag])
+        return indexes_of_ordered_tags_by_process
+        
+    def _sort_tag_indexes_bigrams(self):
+        sorted_tag_indexes_bigrams_by_process = []
+        for process_indexes_bigrams in self._indexes_of_process_intersections():
+            sorted_tag_indexes_bigrams_by_process.append(bigrams(sorted(process_indexes_bigrams)+[None]))
+>>>>>>> cd13e7b9699055921d171eb56a59c3ad0b9e5f23
         return sorted_tag_indexes_bigrams_by_process
         
     def _cut_tag_content_tuples_from_sent(self, index_set_from_sent, process):
@@ -119,14 +148,19 @@ class YakinduParser(object):
         clean_tag_content_tuples_from_sent = []
         for indexed_tuple in index_set_from_sent:
             tag_content_tuples_from_sent.append(list(process[indexed_tuple[0]:indexed_tuple[1]]))
+<<<<<<< HEAD
         
         while [] in tag_content_tuples_from_sent:
             tag_content_tuples_from_sent.remove([])
         #clean_tag_content_tuples_from_sent.append([item for item in tag_content_tuples_from_sent if item != []])
         print 'tag_content_tuples_from_sent'
         print tag_content_tuples_from_sent
+=======
+#        while [] in tag_content_tuples_from_sent:
+#            tag_content_tuples_from_sent.remove([])
+>>>>>>> cd13e7b9699055921d171eb56a59c3ad0b9e5f23
         return tag_content_tuples_from_sent
-        
+    
     def _take_tagged_content(self, indexes, content):
         tagged_content = []
         for index_set, cont in izip(indexes, content):
@@ -185,4 +219,7 @@ class YakinduParser(object):
             if chunk[0] in state_tags and fd_content[tuple(chunk[1:])] > 1:
                 chunk[0] = 'initial_state'
         return final_content
+<<<<<<< HEAD
 
+=======
+>>>>>>> cd13e7b9699055921d171eb56a59c3ad0b9e5f23
