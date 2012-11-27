@@ -45,11 +45,8 @@ class Yakindu_Spec(TestCase):
         second_content = ['transition', 'opens', 'door', 'end', 'state', 'door', 'opened', 'end', 'specification', 'light', 'turns', 'on', 'end', 'specification', 'thermostat', 'power', 'maximum']
         third_indexes = [(0, 0), (0, 1), (1, 3), (3, 3), (3, 4), (4, 4), (4, 5), (5, 6), (6, 7), (7, 8), (8, 8), (8, 9), (9, 10), (10, 12), (12, 13), (13, 14), (14, None)]
         third_content = ['transition', 'closes', 'door', 'end', 'state', 'refrigerator', 'door', 'closed', 'end']
-        
         self.parser._cut_tag_content_tuples_from_sent(indexes, content) |should| equal_to([['initial_state'], ['refrigerator', 'door'], ['closed'], ['end'], ['specification'], ['light'], ['off'], ['end'], ['specification'], ['thermostat', 'power'], ['minimum'], ['end']])
-        
         self.parser._cut_tag_content_tuples_from_sent(second_indexes, second_content) |should| equal_to([['transition'], ['opens', 'door'], ['end'], ['state'], ['door'], ['opened'], ['end'], ['specification'], ['light'], ['turns', 'on'], ['end'], ['specification'], ['thermostat', 'power', 'maximum']])
-        
         self.parser._cut_tag_content_tuples_from_sent(third_indexes, third_content) |should| equal_to([['transition'], ['closes', 'door'], ['end'], ['state'], ['refrigerator'], ['door'], ['closed'], ['end']])
 
     def test_if_content_was_tagged(self):
