@@ -23,9 +23,7 @@ class YakinduParser(object):
         else:
             self._name = basename(path)
             self._path = dirname(path)
-            self._tags = ['initial_state', 'state', 'final_state', 
-	                  'transition', 'end', 'choice', 
-			  'synchronization', 'specification']
+            self._tags = ['initial_state', 'state', 'final_state', 'transition', 'end', 'choice', 'synchronization', 'specification']
         self._content_directory = mkdtemp(prefix="YakinduDirectory")
         self._file_name = self._content_directory + '/content.xml'
 
@@ -33,18 +31,15 @@ class YakinduParser(object):
         return from_file(path, mime=True) == 'application/vnd.oasis.opendocument.text'
 
     def _unzip_odt(self):
-        system('unzip %s/%s -d %s content.xml >>/dev/null' 
-	       %(self._path, self._name, self._content_directory))
+        system('unzip %s/%s -d %s content.xml >>/dev/null' %(self._path, self._name, self._content_directory))
 
     def _clean_content(self):
         self._unzip_odt()
         extracted_doc_name = 'content.xml'
-        raw_content_text = PlaintextCorpusReader(self._content_directory, 
-	                                         extracted_doc_name).raw()
+        raw_content_text = PlaintextCorpusReader(self._content_directory, extracted_doc_name).raw()
         cleaned_text = clean_html(raw_content_text)
         #import ipdb; ipdb.set_trace()
-        raw_content = sub(r'\w+ \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2} ', 
-	                   '', cleaned_text)
+        raw_content = sub(r'\w+ \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2} ', '', cleaned_text)
         tiny_raw_content = raw_content.lower()
         return tiny_raw_content
 
@@ -55,11 +50,9 @@ class YakinduParser(object):
         tokenized_content = []
         raw_content = self._clean_content()
         content_sents = sent_tokenize(raw_content)
-        content_words_by_sents = map(lambda sent: word_tokenize(sent), 
-	                             content_sents)
+        content_words_by_sents = map(lambda sent: word_tokenize(sent), content_sents)
         stopwords = regexp_tokenize(STOPWORDS, "[\w']+")
-        extra_puncts = ['),', ').', '%),', '%).', '):', '()', 
-	                '://', '>.', '.;', '...', '/>.']
+        extra_puncts = ['),', ').', '%),', '%).', '):', '()', '://', '>.', '.;', '...', '/>.']
         puncts = list(punctuation) + extra_puncts
         stopwords.extend(puncts)
         for sent in content_words_by_sents:
@@ -73,8 +66,7 @@ class YakinduParser(object):
         bigrams_of_tags_by_sent = []
         ordered_tags_by_sent = []
         for sent in self.tokenized_content:
-            tags_into_tokenized_content.append([tag for tag in sent 
-	                                            if tag in self._tags])
+            tags_into_tokenized_content.append([tag for tag in sent if tag in self._tags])
         for tags_by_sent in tags_into_tokenized_content:
             bigrams_of_tags_by_sent.append(bigrams(tags_by_sent))
             ordered_tags_by_sent.append(list(OrderedSet(tags_by_sent)))
@@ -87,8 +79,7 @@ class YakinduParser(object):
             indexes_of_ordered_tags_by_process.append([])
         for i in range(len(ordered_tags_by_sent)):
             for tag in ordered_tags_by_sent[i]:
-                indexes_of_ordered_tags_by_process[i].extend([index for index, 
-		label in enumerate(self.tokenized_content[i]) if label == tag])
+                indexes_of_ordered_tags_by_process[i].extend([index for index, label in enumerate(self.tokenized_content[i]) if label == tag])
         return indexes_of_ordered_tags_by_process
         
     def _sort_tag_indexes_bigrams(self):
@@ -101,6 +92,8 @@ class YakinduParser(object):
         tag_content_tuples_from_sent = []
         for indexed_tuple in index_set_from_sent:
             tag_content_tuples_from_sent.append(list(process[indexed_tuple[0]:indexed_tuple[1]]))
+        while [] in tag_content_tuples_from_sent:
+            tag_content_tuples_from_sent.remove([])
         return tag_content_tuples_from_sent
     
     def _take_tagged_content(self, indexes, content):
@@ -111,11 +104,9 @@ class YakinduParser(object):
         
     def _create_lean_content(self):
         lean_content = []
-        tagged_content = self._take_tagged_content(self._sort_tag_indexes_bigrams(), 
-	                                           self.tokenized_content)
+        tagged_content = self._take_tagged_content(self._sort_tag_indexes_bigrams(), self.tokenized_content)
         for sent_tagged_content in tagged_content:
-            lean_content.append([tag_content_tuple for tag_content_tuple in sent_tagged_content 
-	                         if tag_content_tuple != ['end',]])
+            lean_content.append([tag_content_tuple for tag_content_tuple in sent_tagged_content if tag_content_tuple != ['end',]])
         while [] in lean_content:
             lean_content.remove([])
         return lean_content
@@ -126,6 +117,8 @@ class YakinduParser(object):
         tagger = UnigramTagger(train_sents)
         for sent in self._create_lean_content():
             pos_tagged_content.append(tagger.batch_tag(sent))
+        print 'pos_tagged_content'
+        print pos_tagged_content
         return pos_tagged_content
         
     def _clean_pos_tagged_content(self, pos_tagged):
@@ -134,8 +127,7 @@ class YakinduParser(object):
             if sent[0][0] != 'specification':
                 cleaned_pos_tagged_content.append([w for (w, t) in sent])
             else:
-                cleaned_pos_tagged_content.append([w for (w, t) in sent 
-		                                   if t!='VBZ' and t!='VBD'])
+                cleaned_pos_tagged_content.append([w for (w, t) in sent if t!='VBZ' and t!='VBD'])
         return cleaned_pos_tagged_content
 
     def _create_cleaned_content(self):
