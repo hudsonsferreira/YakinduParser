@@ -1,19 +1,19 @@
-from nltk.tokenize import sent_tokenize, word_tokenize, regexp_tokenize
-from nltk.util import clean_html, bigrams
-from nltk.corpus.reader import PlaintextCorpusReader
-from nltk.tag import UnigramTagger
-from nltk.corpus import treebank
-from nltk.probability import FreqDist
-from string import punctuation
-from stopwords import STOPWORDS
 from os.path import join, basename, dirname, exists
 from os import system
-from re import sub
-from OrderedSet import OrderedSet
+from nltk.tokenize import sent_tokenize, word_tokenize, regexp_tokenize
+from nltk.corpus.reader import PlaintextCorpusReader
+from nltk.util import clean_html, bigrams
+from nltk.probability import FreqDist
+from nltk.tag import UnigramTagger
+from nltk.corpus import treebank
 from itertools import izip, chain
+from string import punctuation
+from tempfile import mkdtemp
 from magic import from_file
 from shutil import rmtree
-from tempfile import mkdtemp
+from re import sub
+from stopwords import STOPWORDS
+from OrderedSet import OrderedSet
 
 class YakinduParser(object):
     
