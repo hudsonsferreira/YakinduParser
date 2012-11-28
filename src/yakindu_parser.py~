@@ -8,11 +8,10 @@ from nltk.tag import UnigramTagger
 from nltk.corpus import treebank
 from itertools import izip, chain
 from string import punctuation
-from re import sub
-
+from tempfile import mkdtemp
 from magic import from_file
 from shutil import rmtree
-from tempfile import mkdtemp
+from re import sub
 from stopwords import STOPWORDS
 from OrderedSet import OrderedSet
 

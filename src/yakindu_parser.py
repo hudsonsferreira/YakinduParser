@@ -117,8 +117,6 @@ class YakinduParser(object):
         tagger = UnigramTagger(train_sents)
         for sent in self._create_lean_content():
             pos_tagged_content.append(tagger.batch_tag(sent))
-        print 'pos_tagged_content'
-        print pos_tagged_content
         return pos_tagged_content
         
     def _clean_pos_tagged_content(self, pos_tagged):
