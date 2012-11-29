@@ -146,27 +146,3 @@ class YakinduParser(object):
                 if chunk[0] in state_tags and fd_content[tuple(chunk[1:])] > 1:
                     chunk[0] = 'initial_state'
         return final_content
-        
-#    def teste(self):
-#        content = self._exchange_states()
-#        state_tags2 = ['state', 'inital_state', 'state']
-#        list_states = []
-#        list_specifications = []
-#        for sent in content:
-#            for chunk in sent:
-#                if chunk[0] in state_tags2:
-#                    list_states.append(list(chunk[1:]))
-#                if chunk[0] == 'specification':
-#                    list_specifications.append(list(chunk[1:]))
-#                    import ipdb; ipdb.set_trace()
-#                    
-                    
-                    
-#        State >> refrigeratorDoorClosed << = SGraphFactory.eINSTANCE.createState();
-#        >> refrigeratorDoorClosed.setName("Closed Door");
-#        >>refrigeratorDoorClosed.setSpecification("entry/\nlight.off = true;\nthermostat.minimum = true;\nlight.on = false;\nthermostat.maximum = false");
-#        region.getVertices().add(>>refrigeratorDoorClosed<<);
-#        Node >> refrigeratorDoorClosedNode << = ViewService.createNode(
-#            getRegionCompartmentView(regionView), >> refrigeratorDoorClosed <<,
-#            SemanticHints.STATE, preferencesHint);
-#            setStateViewLayoutConstraint(>> refrigeratorDoorClosedNode <<);
