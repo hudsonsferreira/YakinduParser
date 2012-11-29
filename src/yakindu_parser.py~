@@ -117,8 +117,6 @@ class YakinduParser(object):
         tagger = UnigramTagger(train_sents)
         for sent in self._create_lean_content():
             pos_tagged_content.append(tagger.batch_tag(sent))
-        print 'pos_tagged_content'
-        print pos_tagged_content
         return pos_tagged_content
         
     def _clean_pos_tagged_content(self, pos_tagged):
@@ -136,7 +134,7 @@ class YakinduParser(object):
             cleaned_content.append(self._clean_pos_tagged_content(sent))
         return cleaned_content
     
-    def exchange_states(self):
+    def _exchange_states(self):
         self._remove_directory()
         content = []
         state_tags = ['state', 'final_state']
@@ -148,3 +146,27 @@ class YakinduParser(object):
                 if chunk[0] in state_tags and fd_content[tuple(chunk[1:])] > 1:
                     chunk[0] = 'initial_state'
         return final_content
+        
+    def teste(self):
+        content = self._exchange_states()
+        state_tags2 = ['state', 'inital_state', 'state']
+        list_states = []
+        list_specifications = []
+        for sent in content:
+            for chunk in sent:
+                if chunk[0] in state_tags2:
+                    list_states.append(list(chunk[1:]))
+                if chunk[0] == 'specification':
+                    list_specifications.append(list(chunk[1:]))
+                    import ipdb; ipdb.set_trace()
+                    
+                    
+                    
+#        State >> refrigeratorDoorClosed << = SGraphFactory.eINSTANCE.createState();
+#        >> refrigeratorDoorClosed.setName("Closed Door");
+#        >>refrigeratorDoorClosed.setSpecification("entry/\nlight.off = true;\nthermostat.minimum = true;\nlight.on = false;\nthermostat.maximum = false");
+#        region.getVertices().add(>>refrigeratorDoorClosed<<);
+#        Node >> refrigeratorDoorClosedNode << = ViewService.createNode(
+#            getRegionCompartmentView(regionView), >> refrigeratorDoorClosed <<,
+#            SemanticHints.STATE, preferencesHint);
+#            setStateViewLayoutConstraint(>> refrigeratorDoorClosedNode <<);

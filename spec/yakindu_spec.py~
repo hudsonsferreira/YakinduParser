@@ -45,11 +45,8 @@ class Yakindu_Spec(TestCase):
         second_content = ['transition', 'opens', 'door', 'end', 'state', 'door', 'opened', 'end', 'specification', 'light', 'turns', 'on', 'end', 'specification', 'thermostat', 'power', 'maximum']
         third_indexes = [(0, 0), (0, 1), (1, 3), (3, 3), (3, 4), (4, 4), (4, 5), (5, 6), (6, 7), (7, 8), (8, 8), (8, 9), (9, 10), (10, 12), (12, 13), (13, 14), (14, None)]
         third_content = ['transition', 'closes', 'door', 'end', 'state', 'refrigerator', 'door', 'closed', 'end']
-        
         self.parser._cut_tag_content_tuples_from_sent(indexes, content) |should| equal_to([['initial_state'], ['refrigerator', 'door'], ['closed'], ['end'], ['specification'], ['light'], ['off'], ['end'], ['specification'], ['thermostat', 'power'], ['minimum'], ['end']])
-        
         self.parser._cut_tag_content_tuples_from_sent(second_indexes, second_content) |should| equal_to([['transition'], ['opens', 'door'], ['end'], ['state'], ['door'], ['opened'], ['end'], ['specification'], ['light'], ['turns', 'on'], ['end'], ['specification'], ['thermostat', 'power', 'maximum']])
-        
         self.parser._cut_tag_content_tuples_from_sent(third_indexes, third_content) |should| equal_to([['transition'], ['closes', 'door'], ['end'], ['state'], ['refrigerator'], ['door'], ['closed'], ['end']])
 
     def test_if_content_was_tagged(self):
@@ -68,10 +65,10 @@ class Yakindu_Spec(TestCase):
         second_sent = [[('transition', 'NN')], [('opens', 'VBZ'), ('door', 'NN')], [('state', 'NN')], [('door', 'NN')], [('opened', 'VBD')], [('specification', None)], [('light', 'JJ')], [('turns', 'VBZ'), ('on', 'IN')], [('specification', None)], [('thermostat', None), ('power', 'NN'), ('maximum', 'NN')]]
         third_sent = [[('transition', 'NN')], [('closes', None), ('door', 'NN')], [('state', 'NN')], [('refrigerator', 'NN')], [('door', 'NN')], [('closed', 'VBD')]]
         self.parser._clean_pos_tagged_content(first_sent) |should| equal_to([['initial_state', 'refrigerator'], ['door'], ['closed'], ['specification'], ['light'], ['off'], ['specification', 'thermostat'], ['power'], ['minimum']])
-        self.parser._clean_pos_tagged_content(second_sent) |should| equal_to([['transition'], ['opens', 'door'], ['state'], ['door'], ['opened'], ['specification'], ['light'], ['turns', 'on'], ['specification'], ['thermostat', 'power', 'maximum']])
-        self.parser._clean_pos_tagged_content(third_sent) |should| equal_to([['transition'], ['closes', 'door'], ['state'], ['refrigerator'], ['door'], ['closed']])
+        self.parser._clean_pos_tagged_content(second_sent) |should| equal_to([['transition'], ['open', 'door'], ['state'], ['door'], ['opened'], ['specification'], ['light'], ['turns', 'on'], ['specification'], ['thermostat', 'power', 'maximum']])
+        self.parser._clean_pos_tagged_content(third_sent) |should| equal_to([['transition'], ['close', 'door'], ['state'], ['refrigerator'], ['door'], ['closed']])
 
-    def test_if_content_cleaned(self):
+    def test_if_content_was_cleaned(self):
         self.parser._create_cleaned_content() |should| equal_to([[['initial_state', 'refrigerator', 'door', 'closed'], ['specification', 'light', 'off', 'true'], ['specification', 'light', 'on', 'false'], ['specification', 'thermostat', 'power', 'minimum', 'true'], ['specification', 'thermostat', 'power', 'maximum', 'false']], [['transition', 'opens', 'door'], ['state', 'door', 'opened'], ['specification', 'light', 'on', 'true'], ['specification', 'light', 'off', 'false'], ['specification', 'thermostat', 'power', 'maximum', 'true'], ['specification', 'thermostat', 'power', 'minimum', 'false']], [['transition', 'closes', 'door'], ['state', 'refrigerator', 'door', 'closed']]])
     
     def test_if_states_were_exchanged(self):
