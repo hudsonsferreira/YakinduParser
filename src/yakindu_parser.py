@@ -2,12 +2,10 @@ from os.path import join, basename, dirname, exists
 from os import system
 from nltk.tokenize import sent_tokenize, word_tokenize, regexp_tokenize
 from nltk.corpus.reader import PlaintextCorpusReader
-<<<<<<< HEAD
 from nltk.util import clean_html, bigrams
 from nltk.probability import FreqDist
 from nltk.tag import UnigramTagger
 from nltk.corpus import treebank
-=======
 from nltk.data import load
 from nltk.probability import FreqDist
 from string import punctuation
@@ -16,20 +14,16 @@ from os.path import join, basename, dirname, exists
 from os import system
 from re import sub
 from OrderedSet import OrderedSet
->>>>>>> f2dcfb8cb4009701dc94b17e1402bce73ad98705
 from itertools import izip, chain
 from string import punctuation
 from tempfile import mkdtemp
 from magic import from_file
 from shutil import rmtree
-<<<<<<< HEAD
 from re import sub
 from stopwords import STOPWORDS
 from OrderedSet import OrderedSet
-=======
 from tempfile import mkdtemp
 from nltk.stem import WordNetLemmatizer
->>>>>>> f2dcfb8cb4009701dc94b17e1402bce73ad98705
 
 class YakinduParser(object):
     
@@ -129,7 +123,7 @@ class YakinduParser(object):
 
     def _pos_tag_lean_content(self):
         pos_tagged_content = []
-	tagger = load("/taggers/conll2000_aubt.pickle")
+        tagger = load("/taggers/conll2000_aubt.pickle")
         for sent in self._create_lean_content():
             pos_tagged_content.append(tagger.batch_tag(sent))
         return pos_tagged_content
@@ -137,7 +131,7 @@ class YakinduParser(object):
     def _clean_pos_tagged_content(self, pos_tagged_sent):
         cleaned_pos_tagged_content = []
         lemmatizer = WordNetLemmatizer()
-	verb_tags = ['VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ']
+        verb_tags = ['VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ']
         for chunk in pos_tagged_sent:
             if chunk[0][0] == 'specification':
                 cleaned_pos_tagged_content.append([w for (w, t) in chunk if t not in verb_tags])
