@@ -1,0 +1,67 @@
+package org.yakindu.sct.ui.editor.factories;
+
+import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.gmf.runtime.diagram.core.preferences.PreferencesHint;
+import org.eclipse.gmf.runtime.diagram.core.services.ViewService;
+import org.eclipse.gmf.runtime.diagram.core.util.ViewUtil;
+import org.eclipse.gmf.runtime.draw2d.ui.figures.FigureUtilities;
+import org.eclipse.gmf.runtime.notation.Bounds;
+import org.eclipse.gmf.runtime.notation.DecorationNode;
+import org.eclipse.gmf.runtime.notation.Diagram;
+import org.eclipse.gmf.runtime.notation.Node;
+import org.eclipse.gmf.runtime.notation.NotationFactory;
+import org.eclipse.gmf.runtime.notation.ShapeStyle;
+import org.eclipse.gmf.runtime.notation.View;
+import org.yakindu.sct.model.sgraph.Entry;
+import org.yakindu.sct.model.sgraph.EntryKind;
+import org.yakindu.sct.model.sgraph.Region;
+import org.yakindu.sct.model.sgraph.SGraphFactory;
+import org.yakindu.sct.model.sgraph.State;
+import org.yakindu.sct.model.sgraph.Statechart;
+import org.yakindu.sct.model.sgraph.Transition;
+import org.yakindu.sct.ui.editor.DiagramActivator;
+import org.yakindu.sct.ui.editor.editor.StatechartDiagramEditor;
+import org.yakindu.sct.ui.editor.providers.SemanticHints;
+
+public final class FactoryUtils {
+
+    private static final int INITIAL_REGION_WIDTH = 400;
+    private static final int INITIAL_REGION_HEIGHT = 400;
+    private static final String INITIAL_REGION_NAME = "main region";
+
+    private static final int INITIAL_TEXT_COMPARTMENT_X = 10;
+    private static final int INITIAL_TEXT_COMPARTMENT_Y = 10;
+    private static final int INITIAL_TEXT_COMPARTMENT_HEIGHT = 400;
+    private static final int INITIAL_TEXT_COMPARTMENT_WIDTH = 200;
+
+    private static final int SPACING = 10;
+
+    private FactoryUtils() {
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Node createLabel(View owner, String hint) {
+        DecorationNode nameLabel = NotationFactory.eINSTANCE
+                .createDecorationNode();
+        nameLabel.setType(hint);
+
+        ShapeStyle style = NotationFactory.eINSTANCE.createShapeStyle();
+        style.setFontColor(FigureUtilities.RGBToInteger(ColorConstants.black
+                .getRGB()));
+        nameLabel.getStyles().add(style);
+
+        ViewUtil.insertChildView(owner, nameLabel, ViewUtil.APPEND, true);
+        nameLabel.setLayoutConstraint(NotationFactory.eINSTANCE
+                .createLocation());
+        return nameLabel;
+    }
+
+    public static void createStatechartModel(Resource resource) {
+        createStatechartModel(resource,
+                DiagramActivator.DIAGRAM_PREFERENCES_HINT);
+    }
+
+    public static void createStatechartModel(Resource resource,
+            PreferencesHint preferencesHint) {
+        Statechart statechart = SGraphFactory.eINSTANCE.createStatechart();
