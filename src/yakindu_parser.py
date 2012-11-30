@@ -14,6 +14,7 @@ from itertools import izip, chain
 from magic import from_file
 from shutil import rmtree
 from tempfile import mkdtemp
+from nltk.stem import WordNetLemmatizer
 
 class YakinduParser(object):
     
@@ -121,13 +122,19 @@ class YakinduParser(object):
         print pos_tagged_content
         return pos_tagged_content
         
-    def _clean_pos_tagged_content(self, pos_tagged):
+    def _clean_pos_tagged_content(self, pos_tagged_sent):
         cleaned_pos_tagged_content = []
-        for sent in pos_tagged:
-            if sent[0][0] != 'specification':
-                cleaned_pos_tagged_content.append([w for (w, t) in sent])
+        lemmatizer = WordNetLemmatizer()
+        for chunk in pos_tagged_sent:
+            if chunk[0][0] == 'specification':
+                cleaned_pos_tagged_content.append([w for (w, t) in chunk if t!='VBZ' and t!='VBD'])
             else:
-                cleaned_pos_tagged_content.append([w for (w, t) in sent if t!='VBZ' and t!='VBD'])
+                if chunk[0][0] == 'transition':
+                    cleaned_pos_tagged_content.append([lemmatizer.lemmatize(w) if t=='VBZ' or t=='VBD' else w for (w, t) in chunk])
+                else:
+                    cleaned_pos_tagged_content.append([w for (w, t) in chunk])
+        print 'cleaned_pos_tagged_content'
+        print cleaned_pos_tagged_content
         return cleaned_pos_tagged_content
 
     def _create_cleaned_content(self):
