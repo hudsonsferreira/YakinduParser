@@ -1,8 +1,7 @@
 from nltk.tokenize import sent_tokenize, word_tokenize, regexp_tokenize
 from nltk.util import clean_html, bigrams
 from nltk.corpus.reader import PlaintextCorpusReader
-from nltk.tag import UnigramTagger
-from nltk.corpus import treebank
+from nltk.data import load
 from nltk.probability import FreqDist
 from string import punctuation
 from stopwords import STOPWORDS
@@ -114,27 +113,23 @@ class YakinduParser(object):
 
     def _pos_tag_lean_content(self):
         pos_tagged_content = []
-        train_sents = treebank.tagged_sents()[:3000]
-        tagger = UnigramTagger(train_sents)
+	tagger = load("/taggers/conll2000_aubt.pickle")
         for sent in self._create_lean_content():
             pos_tagged_content.append(tagger.batch_tag(sent))
-        print 'pos_tagged_content'
-        print pos_tagged_content
         return pos_tagged_content
         
     def _clean_pos_tagged_content(self, pos_tagged_sent):
         cleaned_pos_tagged_content = []
         lemmatizer = WordNetLemmatizer()
+	verb_tags = ['VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ']
         for chunk in pos_tagged_sent:
             if chunk[0][0] == 'specification':
-                cleaned_pos_tagged_content.append([w for (w, t) in chunk if t!='VBZ' and t!='VBD'])
+                cleaned_pos_tagged_content.append([w for (w, t) in chunk if t not in verb_tags])
             else:
                 if chunk[0][0] == 'transition':
-                    cleaned_pos_tagged_content.append([lemmatizer.lemmatize(w) if t=='VBZ' or t=='VBD' else w for (w, t) in chunk])
+                    cleaned_pos_tagged_content.append([lemmatizer.lemmatize(w) if t in verb_tags else w for (w, t) in chunk])
                 else:
                     cleaned_pos_tagged_content.append([w for (w, t) in chunk])
-        print 'cleaned_pos_tagged_content'
-        print cleaned_pos_tagged_content
         return cleaned_pos_tagged_content
 
     def _create_cleaned_content(self):
