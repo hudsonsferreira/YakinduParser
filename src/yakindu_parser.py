@@ -149,4 +149,9 @@ class YakinduParser(object):
             for chunk in sent:
                 if chunk[0] in state_tags and fd_content[tuple(chunk[1:])] > 1:
                     chunk[0] = 'initial_state'
+                for word in chunk:
+                    if word == 'true':
+                        chunk[chunk.index(word)] = True
+                    elif word == 'false':
+                        chunk[chunk.index(word)] = False
         return final_content
