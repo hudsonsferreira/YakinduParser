@@ -113,7 +113,7 @@ class YakinduParser(object):
 
     def _pos_tag_lean_content(self):
         pos_tagged_content = []
-	tagger = load("/taggers/conll2000_aubt.pickle")
+        tagger = load("/taggers/conll2000_aubt.pickle")
         for sent in self._create_lean_content():
             pos_tagged_content.append(tagger.batch_tag(sent))
         return pos_tagged_content
@@ -121,7 +121,7 @@ class YakinduParser(object):
     def _clean_pos_tagged_content(self, pos_tagged_sent):
         cleaned_pos_tagged_content = []
         lemmatizer = WordNetLemmatizer()
-	verb_tags = ['VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ']
+        verb_tags = ['VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ']
         for chunk in pos_tagged_sent:
             if chunk[0][0] == 'specification':
                 cleaned_pos_tagged_content.append([w for (w, t) in chunk if t not in verb_tags])
@@ -149,4 +149,105 @@ class YakinduParser(object):
             for chunk in sent:
                 if chunk[0] in state_tags and fd_content[tuple(chunk[1:])] > 1:
                     chunk[0] = 'initial_state'
+                for word in chunk:
+                    if word == 'true':
+                        chunk[chunk.index(word)] = True
+                    elif word == 'false':
+                        chunk[chunk.index(word)] = False
         return final_content
+
+    def _create_objects_interface(self):
+        objects_interface = []
+        for sent in self.exchange_states():
+            for chunk in sent:
+                if chunk[0] == 'specification':
+                    objects_interface.append(chunk[1])
+        ordered_objetcs_interface = list(OrderedSet(objects_interface))
+        return ordered_objetcs_interface
+        
+    def create_boolean_vars(self):
+        boolean_vars = []
+        for sent in self.exchange_states():
+            for chunk in sent:
+                if chunk[0] == 'specification':
+                    for word in chunk[2:]:
+                        if type(word) == bool:
+                            boolean_vars.append(chunk[2:][chunk[2:].index(word)-1])
+        ordered_boolean_vars = list(OrderedSet(boolean_vars))
+        return ordered_boolean_vars
+
+# sent = [['specification', 'b', 'c', 'd', True], ['specification', 'f', 'g', 'h', False]]
+# boolean_vars = []
+
+# for chunk in sent:
+#     if chunk[0] == 'specification':
+#         for word in chunk[2:]:
+#             if type(word) == bool:
+#                 boolean_vars.append(chunk[2:][chunk[2:].index(word)-1])         
+
+# boolean_vars
+# ['d', 'h']
+
+# Estou obtendo string vazia pq no final_content o 'true' e o 'false' devem ser True e False.
+
+# ----------------------------------------------
+# TENTATIVAS INICIAIS
+
+# O final_content tem de ser inserir boleanos no lugar de 'true' e 'false':
+
+# In [7]: for sent in final_content:
+#             for chunk in sent:
+#                 for word in chunk:
+#                     if word == 'true':
+#                         chunk[chunk.index(word)] = True
+#                     elif word == 'false':
+#                         chunk[chunk.index(word)] = False
+#    ...:                     
+
+# In [8]: final
+# final_content  finally        
+
+# In [8]: final_content
+# Out[8]: 
+# [[['initial_state', 'refrigerator', 'door', 'closed'],
+#   ['specification', 'light', 'off', True],
+#   ['specification', 'light', 'on', False],
+#   ['specification', 'thermostat', 'power', 'minimum', True],
+#   ['specification', 'thermostat', 'power', 'maximum', False]],
+#  [['transition', 'open', 'door'],
+#   ['state', 'door', 'opened'],
+#   ['specification', 'light', 'on', True],
+#   ['specification', 'light', 'off', False],
+#   ['specification', 'thermostat', 'power', 'maximum', True],
+#   ['specification', 'thermostat', 'power', 'minimum', False]],
+#  [['transition', 'close', 'door'],
+#   ['initial_state', 'refrigerator', 'door', 'closed']]]
+
+
+# string_booleans = ['true', 'false']
+
+# for chunk in sent:
+#     for word in chunk:
+#         if word in string_booleans:
+#             word = bool(word)
+
+# In [36]: sent
+# Out[36]: 
+# [['specification', 'b', 'c', 'd', 'true'], ['specification', 'f', 'g', 'h', 'false']]
+
+# In [37]: sent[0][-1]
+# Out[37]: 'true'
+
+# In [38]: sent[0][-1] = bool(sent[0][-1])
+
+# In [39]: sent
+# Out[39]: 
+# [['specification', 'b', 'c', 'd', True],
+#  ['specification', 'f', 'g', 'h', 'false']]
+# ---------------------------------------------
+
+# print type(True).__name__ + 'ean'
+# boolean
+   
+
+   # def create_set_specification(self):
