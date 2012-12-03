@@ -155,3 +155,39 @@ class YakinduParser(object):
                     elif word == 'false':
                         chunk[chunk.index(word)] = False
         return final_content
+
+    def create_objects_interface(self):
+        objects_interface = []
+        for sent in self.exchange_states():
+            for chunk in sent:
+                if chunk[0] == 'specification':
+                    objects_interface.append('interface ' + chunk[1] + ':')
+        ordered_objetcs_interface = list(OrderedSet(objects_interface))
+        return ordered_objetcs_interface
+
+    def create_boolean_vars(self):
+        boolean_vars = []
+        for sent in self.exchange_states():
+            for chunk in sent:
+                if chunk[0] == 'specification':
+                    for word in chunk[2:]:
+                        if type(word) == bool:
+                            boolean_vars.append('var '+ chunk[2:][chunk[2:].index(word)-1] + ':boolean')
+        ordered_boolean_vars = list(OrderedSet(boolean_vars))
+        pairs_list = izip(ordered_boolean_vars[::2], ordered_boolean_vars[1::2])
+        pairs_of_ordered_boolean_vars = map(lambda x: list(x), pairs_list)
+        return pairs_of_ordered_boolean_vars
+
+    def create_events_interface(self):
+        events_interface = []
+        for sent in self.exchange_states():
+            for chunk in sent:
+                if chunk[0] == 'transition':
+                    events_interface.append(chunk[1:])
+        formated_events_interface = map(lambda x: 'in event ' + ' '. join(x), events_interface)
+        return formated_events_interface
+
+# Seria interessante mesclar as tres ultimas funcoes 
+# para aproveitar o loop e reduzir processamento.
+
+    # def create_set_specification(self):
