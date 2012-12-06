@@ -113,7 +113,7 @@ class YakinduParser(object):
 
     def _pos_tag_lean_content(self):
         pos_tagged_content = []
-	tagger = load("/taggers/conll2000_aubt.pickle")
+        tagger = load("/taggers/conll2000_aubt.pickle")
         for sent in self._create_lean_content():
             pos_tagged_content.append(tagger.batch_tag(sent))
         return pos_tagged_content
@@ -121,7 +121,7 @@ class YakinduParser(object):
     def _clean_pos_tagged_content(self, pos_tagged_sent):
         cleaned_pos_tagged_content = []
         lemmatizer = WordNetLemmatizer()
-	verb_tags = ['VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ']
+        verb_tags = ['VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ']
         for chunk in pos_tagged_sent:
             if chunk[0][0] == 'specification':
                 cleaned_pos_tagged_content.append([w for (w, t) in chunk if t not in verb_tags])
@@ -184,8 +184,38 @@ class YakinduParser(object):
             for chunk in sent:
                 if chunk[0] == 'transition':
                     events_interface.append(chunk[1:])
-        formated_events_interface = map(lambda x: 'in event ' + ' '. join(x), events_interface)
+        formated_events_interface = map(lambda x: 'in event ' + ''. join(x), events_interface)
         return formated_events_interface
+    
+    def _delete_duplicate_states(self, states):
+        final_states = set()
+        for state in states:
+            if state[0] not in final_states:
+                yield state
+                final_states.add(state[0])
+
+    def _get_states_content(self):
+        state_tags = ['initial_state', 'state', 'final_state']
+        states_interface = []
+        states_interface_capitalized = []
+        for sent in self.exchange_states():
+            for chunk in sent:
+                if chunk[0] in state_tags:
+                    states_interface.append(chunk[1:])
+        return states_interface
+
+    def create_states_interface(self):
+        formated_states_interface = []
+        states_joined = []
+        states_selected = self._get_states_content()
+        #import ipdb; ipdb.set_trace()
+        for state in self._delete_duplicate_states(states_selected):
+            states_joined.append(''.join(state))
+        for state in states_joined:
+            formated_states_interface.append('State %s = SGraphFactory.eINSTANCE.createState();\n closedDoor.setName("%s"); \nclosedDoor.setSpecification("entry/\nlight.off = true;\nthermostat.minimum = true;\nlight.on = false;\nthermostat.maximum = false"); \nregion.getVertices().add(%s); \nNode %sNode = ViewService.createNode(\ngetRegionCompartmentView(regionView), %s,\nSemanticHints.STATE, preferencesHint);\nsetStateViewLayoutConstraint(%sNode);\n\n' %(state,state,state,state,state,state))
+        return formated_states_interface
+                    
+#OBS: falta tratar e incrementar as specifications dos states, esta foi feita na mao
 
 # Seria interessante mesclar as tres ultimas funcoes 
 # para aproveitar o loop e reduzir processamento.
