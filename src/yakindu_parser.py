@@ -214,7 +214,24 @@ class YakinduParser(object):
         for state in states_joined:
             formated_states_interface.append('State %s = SGraphFactory.eINSTANCE.createState();\n closedDoor.setName("%s"); \nclosedDoor.setSpecification("entry/\nlight.off = true;\nthermostat.minimum = true;\nlight.on = false;\nthermostat.maximum = false"); \nregion.getVertices().add(%s); \nNode %sNode = ViewService.createNode(\ngetRegionCompartmentView(regionView), %s,\nSemanticHints.STATE, preferencesHint);\nsetStateViewLayoutConstraint(%sNode);\n\n' %((state,)*6))
         return formated_states_interface
-                    
+
+    def _get_initial_state(self):
+        initial_state_list = []
+        for sent in self.exchange_states():
+            for chunk in sent:
+                if chunk[0] == 'initial_state':
+                    initial_state_list.append(chunk[1:])
+        return initial_state_list
+
+    def create_initial_state_interface(self):
+        formated_initial_state_interface = []
+        initial_state_joined = []
+        states_selected = self._get_initial_state()
+        for state in states_selected:
+            initial_state_joined.append(''.join(state))
+        for state in initial_state_joined:
+            formated_initial_state_interface.append('Transition transition = SGraphFactory.eINSTANCE.createTransition();\ntransition.setSource(initialState);\ntransition.setTarget(%s);\ninitialState.getOutgoingTransitions().add(transition);\nViewService.createEdge(initialStateView, %sNode, transition,\nSemanticHints.TRANSITION, preferencesHint);' %((state,)*2))
+        return formated_initial_state_interface            
 #OBS: falta tratar e incrementar as specifications dos states, esta foi feita na mao
 
 # Seria interessante mesclar as tres ultimas funcoes 
