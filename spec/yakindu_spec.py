@@ -77,6 +77,12 @@ class Yakindu_Spec(TestCase):
     def test_if_tmp_file_was_removed(self):
         exists(self.parser._content_directory + '/content.xml') |should_not| equal_to(True)
     
+    def test_if_states_interface_was_created(self):
+        self.parser.create_states_interface() |should| equal_to(['State refrigeratordoorclosed = SGraphFactory.eINSTANCE.createState();\n closedDoor.setName("refrigeratordoorclosed"); \nclosedDoor.setSpecification("entry/\nlight.off = true;\nthermostat.minimum = true;\nlight.on = false;\nthermostat.maximum = false"); \nregion.getVertices().add(refrigeratordoorclosed); \nNode refrigeratordoorclosedNode = ViewService.createNode(\ngetRegionCompartmentView(regionView), refrigeratordoorclosed,\nSemanticHints.STATE, preferencesHint);\nsetStateViewLayoutConstraint(refrigeratordoorclosedNode);\n\n', 'State dooropened = SGraphFactory.eINSTANCE.createState();\n closedDoor.setName("dooropened"); \nclosedDoor.setSpecification("entry/\nlight.off = true;\nthermostat.minimum = true;\nlight.on = false;\nthermostat.maximum = false"); \nregion.getVertices().add(dooropened); \nNode dooropenedNode = ViewService.createNode(\ngetRegionCompartmentView(regionView), dooropened,\nSemanticHints.STATE, preferencesHint);\nsetStateViewLayoutConstraint(dooropenedNode);\n\n'])
+    
+    def test_if_initial_state_transition_was_created(self):
+        self.parser.create_initial_state_interface() |should| equal_to(['Transition transition = SGraphFactory.eINSTANCE.createTransition();\ntransition.setSource(initialState);\ntransition.setTarget(refrigeratordoorclosed);\ninitialState.getOutgoingTransitions().add(transition);\nViewService.createEdge(initialStateView, refrigeratordoorclosedNode, transition,\nSemanticHints.TRANSITION, preferencesHint);'])
+    
     def test_if_standard_patch_was_generated(self):
         pass
 if __name__ == '__main__':

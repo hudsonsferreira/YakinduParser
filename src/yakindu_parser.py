@@ -227,11 +227,12 @@ class YakinduParser(object):
         formated_initial_state_interface = []
         initial_state_joined = []
         states_selected = self._get_initial_state()
-        for state in states_selected:
+        for state in self._delete_duplicate_states(states_selected):
             initial_state_joined.append(''.join(state))
         for state in initial_state_joined:
             formated_initial_state_interface.append('Transition transition = SGraphFactory.eINSTANCE.createTransition();\ntransition.setSource(initialState);\ntransition.setTarget(%s);\ninitialState.getOutgoingTransitions().add(transition);\nViewService.createEdge(initialStateView, %sNode, transition,\nSemanticHints.TRANSITION, preferencesHint);' %((state,)*2))
-        return formated_initial_state_interface            
+        return formated_initial_state_interface
+
 #OBS: falta tratar e incrementar as specifications dos states, esta foi feita na mao
 
 # Seria interessante mesclar as tres ultimas funcoes 
