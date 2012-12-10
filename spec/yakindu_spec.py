@@ -83,8 +83,10 @@ class Yakindu_Spec(TestCase):
     def test_if_initial_state_transition_was_created(self):
         self.parser.create_initial_state_interface() |should| equal_to(['Transition transition = SGraphFactory.eINSTANCE.createTransition();\ntransition.setSource(initialState);\ntransition.setTarget(refrigeratordoorclosed);\ninitialState.getOutgoingTransitions().add(transition);\nViewService.createEdge(initialStateView, refrigeratordoorclosedNode, transition,\nSemanticHints.TRANSITION, preferencesHint);'])
     
-    def test_if_standard_patch_was_generated(self):
-        pass
+    def test_if_transitions_interface_were_created(self):
+        self.parser.create_transitions_interface() |should| equal_to(['Transition opendoor = SGraphFactory.eINSTANCE.createTransition();\nopendoor.setSpecification("opendoor");\nopendoor.setSource(closedDoor);\nopendoor.setTarget(openedDoor);', 'Transition closedoor = SGraphFactory.eINSTANCE.createTransition();\nclosedoor.setSpecification("closedoor");\nclosedoor.setSource(openedDoor);\nclosedoor.setTarget(closedDoor);'])
+
+
 if __name__ == '__main__':
     unittest.main()
 

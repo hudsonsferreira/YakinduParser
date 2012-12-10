@@ -208,7 +208,6 @@ class YakinduParser(object):
         formated_states_interface = []
         states_joined = []
         states_selected = self._get_states_content()
-        #import ipdb; ipdb.set_trace()
         for state in self._delete_duplicate_states(states_selected):
             states_joined.append(''.join(state))
         for state in states_joined:
@@ -232,6 +231,20 @@ class YakinduParser(object):
         for state in initial_state_joined:
             formated_initial_state_interface.append('Transition transition = SGraphFactory.eINSTANCE.createTransition();\ntransition.setSource(initialState);\ntransition.setTarget(%s);\ninitialState.getOutgoingTransitions().add(transition);\nViewService.createEdge(initialStateView, %sNode, transition,\nSemanticHints.TRANSITION, preferencesHint);' %((state,)*2))
         return formated_initial_state_interface
+
+    def _get_sequence_transitions(self):
+        state_tags = ['initial_state', 'state', 'final_state']
+        list_sequence = []
+        list_transitions = []
+        for sent in self.exchange_states():
+            for chunk in sent:
+                if chunk[0] in state_tags or chunk[0] == 'transition':
+                    list_sequence.append(chunk[1:])
+        #import ipdb; ipdb.set_trace()
+        for i in range(2, len(list_sequence), 2):
+            list_transitions.append(list_sequence[i-2:i+1])
+        return list_transitions
+        
 
 #OBS: falta tratar e incrementar as specifications dos states, esta foi feita na mao
 
