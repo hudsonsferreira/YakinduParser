@@ -211,7 +211,7 @@ class YakinduParser(object):
         for state in self._delete_duplicate_states(states_selected):
             states_joined.append(''.join(state))
         for state in states_joined:
-            formated_states_interface.append('State %s = SGraphFactory.eINSTANCE.createState();\n closedDoor.setName("%s"); \nclosedDoor.setSpecification("entry/\nlight.off = true;\nthermostat.minimum = true;\nlight.on = false;\nthermostat.maximum = false"); \nregion.getVertices().add(%s); \nNode %sNode = ViewService.createNode(\ngetRegionCompartmentView(regionView), %s,\nSemanticHints.STATE, preferencesHint);\nsetStateViewLayoutConstraint(%sNode);\n\n' %((state,)*6))
+            formated_states_interface.append('State %s = SGraphFactory.eINSTANCE.createState();\n %s.setName("%s"); \n%s.setSpecification("entry/\nlight.off = true;\nthermostat.minimum = true;\nlight.on = false;\nthermostat.maximum = false"); \nregion.getVertices().add(%s); \nNode %sNode = ViewService.createNode(\ngetRegionCompartmentView(regionView), %s,\nSemanticHints.STATE, preferencesHint);\nsetStateViewLayoutConstraint(%sNode);\n\n' %((state,)*8))
         return formated_states_interface
 
     def _get_initial_state(self):
