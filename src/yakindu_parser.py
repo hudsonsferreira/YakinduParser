@@ -14,6 +14,7 @@ from magic import from_file
 from shutil import rmtree
 from tempfile import mkdtemp
 from nltk.stem import WordNetLemmatizer
+from groupby import modified_groupby
 
 class YakinduParser(object):
     
@@ -156,36 +157,37 @@ class YakinduParser(object):
                         chunk[chunk.index(word)] = False
         return final_content
 
-    def create_objects_interface(self):
-        objects_interface = []
-        for sent in self.exchange_states():
-            for chunk in sent:
-                if chunk[0] == 'specification':
-                    objects_interface.append('interface ' + chunk[1] + ':')
-        ordered_objetcs_interface = list(OrderedSet(objects_interface))
-        return ordered_objetcs_interface
+    def _convert_to_yakindu_type(self, term):
+        python_types = ['int', 'float', 'bool', 'str', 'NoneType']
+        yakindu_types = ['integer', 'real', 'boolean', 'string', 'void']
+        types_dict = dict(izip(python_types, yakindu_types))
+        return types_dict[term]
 
-    def create_boolean_vars(self):
-        boolean_vars = []
-        for sent in self.exchange_states():
-            for chunk in sent:
-                if chunk[0] == 'specification':
-                    for word in chunk[2:]:
-                        if type(word) == bool:
-                            boolean_vars.append('var '+ chunk[2:][chunk[2:].index(word)-1] + ':boolean')
-        ordered_boolean_vars = list(OrderedSet(boolean_vars))
-        pairs_list = izip(ordered_boolean_vars[::2], ordered_boolean_vars[1::2])
-        pairs_of_ordered_boolean_vars = map(lambda x: list(x), pairs_list)
-        return pairs_of_ordered_boolean_vars
+    def _create_objects_interface(self):
+        formated_objects_interface = []
+        initial_state_sent = list(chain(*[sent for sent in self.exchange_states() if sent[0][0] == 'initial_state']))
+        sub_sent = [chunk for chunk in initial_state_sent if chunk[0] == 'specification']
+        objects_specification = modified_groupby(sub_sent, key=lambda chunk: chunk[1])
+        for k, specification_chunks in objects_specification.items():
+            formated_objects_interface.append('\n\ninterface ' + k + ':')
+            for chunk in specification_chunks:
+                 formated_objects_interface.append('\nvar ' + chunk[-2] + ':' + self._convert_to_yakindu_type(type(chunk[-1]).__name__))
+        return ''.join(formated_objects_interface)
 
-    def create_events_interface(self):
-        events_interface = []
-        for sent in self.exchange_states():
-            for chunk in sent:
-                if chunk[0] == 'transition':
-                    events_interface.append(chunk[1:])
-        formated_events_interface = map(lambda x: 'in event ' + ''. join(x), events_interface)
-        return formated_events_interface
+    def _create_events_interface(self):
+        transition_events_interface = []
+        flat_final_content = list(chain(*self.exchange_states()))
+        sub_sent = [chunk for chunk in flat_final_content if chunk[0] == 'transition']
+        events_interface = modified_groupby(sub_sent, key=lambda chunk: chunk[0])
+        for k, transition_chunks in events_interface.items():
+            for chunk in transition_chunks:
+                transition_events_interface.append(chunk[1:])
+        formated_transition_events_interface = map(lambda x: '\nin event ' + ' '. join(x), transition_events_interface)
+        return '\n\ninterface:' + ''.join(formated_transition_events_interface)
+
+    def create_set_specification(self):
+        set_specification_method = 'statechart.setSpecification(' + '"'
+        return "%s%s%s%s" % (set_specification_method, self._create_objects_interface(), self._create_events_interface(), '");')
     
     def _delete_duplicate_states(self, states):
         final_states = set()
@@ -263,8 +265,3 @@ class YakinduParser(object):
         
 
 #OBS: falta tratar e incrementar as specifications dos states, esta foi feita na mao
-
-# Seria interessante mesclar as tres ultimas funcoes 
-# para aproveitar o loop e reduzir processamento.
-
-    # def create_set_specification(self):
