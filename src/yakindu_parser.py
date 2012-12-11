@@ -244,6 +244,22 @@ class YakinduParser(object):
         for i in range(2, len(list_sequence), 2):
             list_transitions.append(list_sequence[i-2:i+1])
         return list_transitions
+
+    def _join_sequence_transitions(self):
+        sequence_joined = []
+        interface_transitions_joined = []
+        for sequence in self._get_sequence_transitions():
+            for word in sequence:
+                sequence_joined.append(''.join(word))
+        for i in range(2, len(sequence_joined), 3): 
+            interface_transitions_joined.append(list(sequence_joined[i-2:i+1]))    
+        return interface_transitions_joined
+
+    def create_transitions_interface(self):
+        formated_transition_interface = []
+        for item in self._join_sequence_transitions():
+            formated_transition_interface.append('Transition %s = SGraphFactory.eINSTANCE.createTransition();\n%s.setSpecification("%s");\n %s.setSource(%s);\n%s.setTarget(%s);' %(item[1], item[1], item[1], item[1], item[0], item[1], item[2]))
+        return formated_transition_interface
         
 
 #OBS: falta tratar e incrementar as specifications dos states, esta foi feita na mao

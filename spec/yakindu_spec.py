@@ -84,7 +84,7 @@ class Yakindu_Spec(TestCase):
         self.parser.create_initial_state_interface() |should| equal_to(['Transition transition = SGraphFactory.eINSTANCE.createTransition();\ntransition.setSource(initialState);\ntransition.setTarget(refrigeratordoorclosed);\ninitialState.getOutgoingTransitions().add(transition);\nViewService.createEdge(initialStateView, refrigeratordoorclosedNode, transition,\nSemanticHints.TRANSITION, preferencesHint);'])
     
     def test_if_transitions_interface_were_created(self):
-        self.parser.create_transitions_interface() |should| equal_to(['Transition opendoor = SGraphFactory.eINSTANCE.createTransition();\nopendoor.setSpecification("opendoor");\nopendoor.setSource(closedDoor);\nopendoor.setTarget(openedDoor);', 'Transition closedoor = SGraphFactory.eINSTANCE.createTransition();\nclosedoor.setSpecification("closedoor");\nclosedoor.setSource(openedDoor);\nclosedoor.setTarget(closedDoor);'])
+        self.parser.create_transitions_interface() |should| equal_to(['Transition opendoor = SGraphFactory.eINSTANCE.createTransition();\nopendoor.setSpecification("opendoor");\n opendoor.setSource(refrigeratordoorclosed);\nopendoor.setTarget(dooropened);', 'Transition closedoor = SGraphFactory.eINSTANCE.createTransition();\nclosedoor.setSpecification("closedoor");\n closedoor.setSource(dooropened);\nclosedoor.setTarget(refrigeratordoorclosed);'])
 
 
 if __name__ == '__main__':
