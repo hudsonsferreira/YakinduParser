@@ -16,6 +16,7 @@ from tempfile import mkdtemp
 from nltk.stem import WordNetLemmatizer
 from groupby import modified_groupby
 
+
 class YakinduParser(object):
     
     def __init__(self, path):
@@ -182,12 +183,12 @@ class YakinduParser(object):
         for k, transition_chunks in events_interface.items():
             for chunk in transition_chunks:
                 transition_events_interface.append(chunk[1:])
-        formated_transition_events_interface = map(lambda x: '\nin event ' + ' '. join(x), transition_events_interface)
+        formated_transition_events_interface = map(lambda x: '\nin event ' + ''. join(x), transition_events_interface)
         return '\n\ninterface:' + ''.join(formated_transition_events_interface)
 
     def create_set_specification(self):
         set_specification_method = 'statechart.setSpecification(' + '"'
-        return "%s%s%s%s" % (set_specification_method, self._create_objects_interface(), self._create_events_interface(), '");')
+        return "%s%s%s%s" % (set_specification_method, self._create_objects_interface(), self._create_events_interface(), '");\n\n')
     
     def _delete_duplicate_states(self, states):
         final_states = set()
@@ -242,7 +243,6 @@ class YakinduParser(object):
             for chunk in sent:
                 if chunk[0] in state_tags or chunk[0] == 'transition':
                     list_sequence.append(chunk[1:])
-        #import ipdb; ipdb.set_trace()
         for i in range(2, len(list_sequence), 2):
             list_transitions.append(list_sequence[i-2:i+1])
         return list_transitions
@@ -260,8 +260,28 @@ class YakinduParser(object):
     def create_transitions_interface(self):
         formated_transition_interface = []
         for item in self._join_sequence_transitions():
-            formated_transition_interface.append('Transition %s = SGraphFactory.eINSTANCE.createTransition();\n%s.setSpecification("%s");\n %s.setSource(%s);\n%s.setTarget(%s);' %(item[1], item[1], item[1], item[1], item[0], item[1], item[2]))
+            formated_transition_interface.append('Transition %s = SGraphFactory.eINSTANCE.createTransition();\n%s.setSpecification("%s");\n %s.setSource(%s);\n%s.setTarget(%s);\n' %(item[1], item[1], item[1], item[1], item[0], item[1], item[2]))
         return formated_transition_interface
-        
-
+    
+    def create_class_factory_utils(self):
+        class_content = []
+        first_constant = open('first_constant.txt', 'r')
+        second_constant = open('second_constant.txt', 'r')
+        third_constant = open('third_constant.txt', 'r')
+        class_content.append(first_constant.read())
+        class_content.append(self.create_set_specification())
+        class_content.append(second_constant.read())
+        #obs nao funcionou com list comprehension
+        for state in self.create_states_interface():
+            class_content.append(state)
+        for transition in self.create_transitions_interface():
+            class_content.append(transition)
+        for initial_state in self.create_initial_state_interface():
+            class_content.append(initial_state)
+        class_content.append(third_constant.read())
+        #import ipdb; ipdb.set_trace()
+        class_factory_utils = open('FactoryUtils.java', 'w')
+        for content in class_content:
+            class_factory_utils.write(str(content))
+        class_factory_utils.close()
 #OBS: falta tratar e incrementar as specifications dos states, esta foi feita na mao
