@@ -65,21 +65,9 @@ public final class FactoryUtils {
     public static void createStatechartModel(Resource resource,
             PreferencesHint preferencesHint) {
         Statechart statechart = SGraphFactory.eINSTANCE.createStatechart();
-statechart.setSpecification("
+        statechart.setSpecification("\n\ninterface light:\nvar off:boolean\nvar on:boolean\n\ninterface thermostat:\nvar minimum:boolean\nvar maximum:boolean\n\ninterface:\nin event opendoor\nin event closedoor");
 
-interface light:
-var off:boolean
-var on:boolean
-
-interface thermostat:
-var minimum:boolean
-var maximum:boolean
-
-interface:
-in event opendoor
-in event closedoor");
-
-    String lastSegment = resource.getURI().lastSegment();
+        String lastSegment = resource.getURI().lastSegment();
         String statechartName = lastSegment.substring(0,
                 lastSegment.indexOf('.'));
         statechart.setName(statechartName);

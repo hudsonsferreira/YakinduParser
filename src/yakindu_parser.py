@@ -164,7 +164,7 @@ class YakinduParser(object):
         types_dict = dict(izip(python_types, yakindu_types))
         return types_dict[term]
 
-    def _create_objects_interface(self):
+    def create_objects_interface(self):
         formated_objects_interface = []
         initial_state_sent = list(chain(*[sent for sent in self.exchange_states() if sent[0][0] == 'initial_state']))
         sub_sent = [chunk for chunk in initial_state_sent if chunk[0] == 'specification']
@@ -175,7 +175,7 @@ class YakinduParser(object):
                  formated_objects_interface.append('\nvar ' + chunk[-2] + ':' + self._convert_to_yakindu_type(type(chunk[-1]).__name__))
         return ''.join(formated_objects_interface)
 
-    def _create_events_interface(self):
+    def create_events_interface(self):
         transition_events_interface = []
         flat_final_content = list(chain(*self.exchange_states()))
         sub_sent = [chunk for chunk in flat_final_content if chunk[0] == 'transition']
@@ -183,12 +183,15 @@ class YakinduParser(object):
         for k, transition_chunks in events_interface.items():
             for chunk in transition_chunks:
                 transition_events_interface.append(chunk[1:])
-        formated_transition_events_interface = map(lambda x: '\nin event ' + ''. join(x), transition_events_interface)
+        formated_transition_events_interface = map(lambda x: '\nin event ' + ''.join(x), transition_events_interface)
         return '\n\ninterface:' + ''.join(formated_transition_events_interface)
 
     def create_set_specification(self):
-        set_specification_method = 'statechart.setSpecification(' + '"'
-        return "%s%s%s%s" % (set_specification_method, self._create_objects_interface(), self._create_events_interface(), '");\n\n')
+        set_specification_method = '        statechart.setSpecification('
+        objects_interface = self.create_objects_interface()
+        events_interface = self.create_events_interface()
+        set_specification_content = '"' + objects_interface + events_interface + '"'
+        return '%s%s%s' % (set_specification_method, repr(set_specification_content)[1:-1], ');\n\n    ')
     
     def _delete_duplicate_states(self, states):
         final_states = set()
