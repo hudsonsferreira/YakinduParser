@@ -95,46 +95,38 @@ public final class FactoryUtils {
         setInitialStateViewLayoutConstraint(initialStateView);
         
         
-State refrigeratordoorclosed = SGraphFactory.eINSTANCE.createState();
- refrigeratordoorclosed.setName("refrigeratordoorclosed"); 
-refrigeratordoorclosed.setSpecification("entry/
-light.off = true;
-thermostat.minimum = true;
-light.on = false;
-thermostat.maximum = false"); 
-region.getVertices().add(refrigeratordoorclosed); 
-Node refrigeratordoorclosedNode = ViewService.createNode(
-getRegionCompartmentView(regionView), refrigeratordoorclosed,
-SemanticHints.STATE, preferencesHint);
-setStateViewLayoutConstraint(refrigeratordoorclosedNode);
+        State refrigeratordoorclosed = SGraphFactory.eINSTANCE.createState();
+        refrigeratordoorclosed.setName("refrigeratordoorclosed"); 
+        refrigeratordoorclosed.setSpecification("entry/\nlight.off = true;\nthermostat.minimum = true;\nlight.on = false;\nthermostat.maximum = false"); 
+        region.getVertices().add(refrigeratordoorclosed); 
+        Node refrigeratordoorclosedNode = ViewService.createNode(
+        getRegionCompartmentView(regionView), refrigeratordoorclosed,
+        SemanticHints.STATE, preferencesHint);
+        setStateViewLayoutConstraint(refrigeratordoorclosedNode);
 
-State dooropened = SGraphFactory.eINSTANCE.createState();
- dooropened.setName("dooropened"); 
-dooropened.setSpecification("entry/
-light.off = true;
-thermostat.minimum = true;
-light.on = false;
-thermostat.maximum = false"); 
-region.getVertices().add(dooropened); 
-Node dooropenedNode = ViewService.createNode(
-getRegionCompartmentView(regionView), dooropened,
-SemanticHints.STATE, preferencesHint);
-setStateViewLayoutConstraint(dooropenedNode);
+        State dooropened = SGraphFactory.eINSTANCE.createState();
+        dooropened.setName("dooropened"); 
+        dooropened.setSpecification("entry/\nlight.off = true;\nthermostat.minimum = true;\nlight.on = false;\nthermostat.maximum = false"); 
+        region.getVertices().add(dooropened); 
+        Node dooropenedNode = ViewService.createNode(
+        getRegionCompartmentView(regionView), dooropened,
+        SemanticHints.STATE, preferencesHint);
+        setStateViewLayoutConstraint(dooropenedNode);
 
-Transition opendoor = SGraphFactory.eINSTANCE.createTransition();
-opendoor.setSpecification("opendoor");
- opendoor.setSource(refrigeratordoorclosed);
-opendoor.setTarget(dooropened);
-Transition closedoor = SGraphFactory.eINSTANCE.createTransition();
-closedoor.setSpecification("closedoor");
- closedoor.setSource(dooropened);
-closedoor.setTarget(refrigeratordoorclosed);
-Transition transition = SGraphFactory.eINSTANCE.createTransition();
-transition.setSource(initialState);
-transition.setTarget(refrigeratordoorclosed);
-initialState.getOutgoingTransitions().add(transition);
-ViewService.createEdge(initialStateView, refrigeratordoorclosedNode, transition,
-SemanticHints.TRANSITION, preferencesHint);Node textCompartment = ViewService.createNode(diagram, statechart,
+        Transition opendoor = SGraphFactory.eINSTANCE.createTransition();
+        opendoor.setSpecification("opendoor");
+        opendoor.setSource(refrigeratordoorclosed);
+        opendoor.setTarget(dooropened);
+        Transition closedoor = SGraphFactory.eINSTANCE.createTransition();
+        closedoor.setSpecification("closedoor");
+        closedoor.setSource(dooropened);
+        closedoor.setTarget(refrigeratordoorclosed);
+        Transition transition = SGraphFactory.eINSTANCE.createTransition();
+        transition.setSource(initialState);
+        transition.setTarget(refrigeratordoorclosed);
+        initialState.getOutgoingTransitions().add(transition);
+        ViewService.createEdge(initialStateView, refrigeratordoorclosedNode, transition,
+        SemanticHints.TRANSITION, preferencesHint);Node textCompartment = ViewService.createNode(diagram, statechart,
                 SemanticHints.STATECHART_TEXT, preferencesHint);
         setTextCompartmentLayoutConstraint(textCompartment);
     }
@@ -168,12 +160,12 @@ SemanticHints.TRANSITION, preferencesHint);Node textCompartment = ViewService.cr
     }
 
     private static void setRegionViewLayoutConstraint(Node regionView) {
-    Bounds bounds = NotationFactory.eINSTANCE.createBounds();
-    bounds.setX(INITIAL_TEXT_COMPARTMENT_WIDTH + INITIAL_TEXT_COMPARTMENT_X
+        Bounds bounds = NotationFactory.eINSTANCE.createBounds();
+        bounds.setX(INITIAL_TEXT_COMPARTMENT_WIDTH + INITIAL_TEXT_COMPARTMENT_X
                 + SPACING);
-    bounds.setY(INITIAL_TEXT_COMPARTMENT_Y);
-    bounds.setHeight(INITIAL_REGION_HEIGHT);
-    bounds.setWidth(INITIAL_REGION_WIDTH);
-    regionView.setLayoutConstraint(bounds);
+        bounds.setY(INITIAL_TEXT_COMPARTMENT_Y);
+        bounds.setHeight(INITIAL_REGION_HEIGHT);
+        bounds.setWidth(INITIAL_REGION_WIDTH);
+        regionView.setLayoutConstraint(bounds);
     }
 }

@@ -164,7 +164,7 @@ class YakinduParser(object):
         types_dict = dict(izip(python_types, yakindu_types))
         return types_dict[term]
 
-    def create_objects_interface(self):
+    def _create_objects_interface(self):
         formated_objects_interface = []
         initial_state_sent = list(chain(*[sent for sent in self.exchange_states() if sent[0][0] == 'initial_state']))
         sub_sent = [chunk for chunk in initial_state_sent if chunk[0] == 'specification']
@@ -175,7 +175,7 @@ class YakinduParser(object):
                  formated_objects_interface.append('\nvar ' + chunk[-2] + ':' + self._convert_to_yakindu_type(type(chunk[-1]).__name__))
         return ''.join(formated_objects_interface)
 
-    def create_events_interface(self):
+    def _create_events_interface(self):
         transition_events_interface = []
         flat_final_content = list(chain(*self.exchange_states()))
         sub_sent = [chunk for chunk in flat_final_content if chunk[0] == 'transition']
@@ -188,8 +188,8 @@ class YakinduParser(object):
 
     def create_set_specification(self):
         set_specification_method = '        statechart.setSpecification('
-        objects_interface = self.create_objects_interface()
-        events_interface = self.create_events_interface()
+        objects_interface = self._create_objects_interface()
+        events_interface = self._create_events_interface()
         set_specification_content = '"' + objects_interface + events_interface + '"'
         return '%s%s%s' % (set_specification_method, repr(set_specification_content)[1:-1], ');\n\n    ')
     
@@ -214,10 +214,11 @@ class YakinduParser(object):
         formated_states_interface = []
         states_joined = []
         states_selected = self._get_states_content()
+        indentation = 2*(4 * ' ')
+        specific_set_specification_content = '"' + 'entry/\nlight.off = true;\nthermostat.minimum = true;\nlight.on = false;\nthermostat.maximum = false' + '"'
         for state in self._delete_duplicate_states(states_selected):
             states_joined.append(''.join(state))
-        for state in states_joined:
-            formated_states_interface.append('State %s = SGraphFactory.eINSTANCE.createState();\n %s.setName("%s"); \n%s.setSpecification("entry/\nlight.off = true;\nthermostat.minimum = true;\nlight.on = false;\nthermostat.maximum = false"); \nregion.getVertices().add(%s); \nNode %sNode = ViewService.createNode(\ngetRegionCompartmentView(regionView), %s,\nSemanticHints.STATE, preferencesHint);\nsetStateViewLayoutConstraint(%sNode);\n\n' %((state,)*8))
+        formated_states_interface = map(lambda state: '{1}State %s = SGraphFactory.eINSTANCE.createState();\n{1}%s.setName("%s"); \n{1}%s.setSpecification({0}); \n{1}region.getVertices().add(%s); \n{1}Node %sNode = ViewService.createNode(\n{1}getRegionCompartmentView(regionView), %s,\n{1}SemanticHints.STATE, preferencesHint);\n{1}setStateViewLayoutConstraint(%sNode);\n\n'.format(repr(specific_set_specification_content)[1:-1], indentation) % ((state,)*8), states_joined)
         return formated_states_interface
 
     def _get_initial_state(self):
@@ -232,10 +233,11 @@ class YakinduParser(object):
         formated_initial_state_interface = []
         initial_state_joined = []
         states_selected = self._get_initial_state()
+        indentation = 2*(4 * ' ')
         for state in self._delete_duplicate_states(states_selected):
             initial_state_joined.append(''.join(state))
         for state in initial_state_joined:
-            formated_initial_state_interface.append('Transition transition = SGraphFactory.eINSTANCE.createTransition();\ntransition.setSource(initialState);\ntransition.setTarget(%s);\ninitialState.getOutgoingTransitions().add(transition);\nViewService.createEdge(initialStateView, %sNode, transition,\nSemanticHints.TRANSITION, preferencesHint);' %((state,)*2))
+            formated_initial_state_interface.append('{0}Transition transition = SGraphFactory.eINSTANCE.createTransition();\n{0}transition.setSource(initialState);\n{0}transition.setTarget(%s);\n{0}initialState.getOutgoingTransitions().add(transition);\n{0}ViewService.createEdge(initialStateView, %sNode, transition,\n{0}SemanticHints.TRANSITION, preferencesHint);'.format(indentation) %((state,)*2))
         return formated_initial_state_interface
 
     def _get_sequence_transitions(self):
@@ -257,13 +259,14 @@ class YakinduParser(object):
             for word in sequence:
                 sequence_joined.append(''.join(word))
         for i in range(2, len(sequence_joined), 3): 
-            interface_transitions_joined.append(list(sequence_joined[i-2:i+1]))    
+            interface_transitions_joined.append(list(sequence_joined[i-2:i+1]))
         return interface_transitions_joined
 
     def create_transitions_interface(self):
         formated_transition_interface = []
+        indentation = 2*(4 * ' ')
         for item in self._join_sequence_transitions():
-            formated_transition_interface.append('Transition %s = SGraphFactory.eINSTANCE.createTransition();\n%s.setSpecification("%s");\n %s.setSource(%s);\n%s.setTarget(%s);\n' %(item[1], item[1], item[1], item[1], item[0], item[1], item[2]))
+            formated_transition_interface.append('{0}Transition %s = SGraphFactory.eINSTANCE.createTransition();\n{0}%s.setSpecification("%s");\n{0}%s.setSource(%s);\n{0}%s.setTarget(%s);\n'.format(indentation) %(item[1], item[1], item[1], item[1], item[0], item[1], item[2]))
         return formated_transition_interface
     
     def create_class_factory_utils(self):

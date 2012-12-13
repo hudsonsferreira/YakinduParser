@@ -32,12 +32,12 @@ Node textCompartment = ViewService.createNode(diagram, statechart,
     }
 
     private static void setRegionViewLayoutConstraint(Node regionView) {
-    Bounds bounds = NotationFactory.eINSTANCE.createBounds();
-    bounds.setX(INITIAL_TEXT_COMPARTMENT_WIDTH + INITIAL_TEXT_COMPARTMENT_X
+        Bounds bounds = NotationFactory.eINSTANCE.createBounds();
+        bounds.setX(INITIAL_TEXT_COMPARTMENT_WIDTH + INITIAL_TEXT_COMPARTMENT_X
                 + SPACING);
-    bounds.setY(INITIAL_TEXT_COMPARTMENT_Y);
-    bounds.setHeight(INITIAL_REGION_HEIGHT);
-    bounds.setWidth(INITIAL_REGION_WIDTH);
-    regionView.setLayoutConstraint(bounds);
+        bounds.setY(INITIAL_TEXT_COMPARTMENT_Y);
+        bounds.setHeight(INITIAL_REGION_HEIGHT);
+        bounds.setWidth(INITIAL_REGION_WIDTH);
+        regionView.setLayoutConstraint(bounds);
     }
 }
