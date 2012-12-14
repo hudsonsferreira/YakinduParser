@@ -192,13 +192,6 @@ class YakinduParser(object):
         events_interface = self._create_events_interface()
         set_specification_content = '"' + objects_interface + events_interface + '"'
         return '%s%s%s' % (set_specification_method, repr(set_specification_content)[1:-1], ');\n\n    ')
-    
-    def _delete_duplicate_states(self, states):
-        final_states = set()
-        for state in states:
-            if state[0] not in final_states:
-                yield state
-                final_states.add(state[0])
 
     def _get_states_content(self):
         state_tags = ['initial_state', 'state', 'final_state']
@@ -213,12 +206,15 @@ class YakinduParser(object):
     def create_states_interface(self):
         formated_states_interface = []
         states_joined = []
+        states_cleaned = []
         states_selected = self._get_states_content()
         indentation = 2*(4 * ' ')
         specific_set_specification_content = '"' + 'entry/\nlight.off = true;\nthermostat.minimum = true;\nlight.on = false;\nthermostat.maximum = false' + '"'
-        for state in self._delete_duplicate_states(states_selected):
+        for state in states_selected:
             states_joined.append(''.join(state))
-        formated_states_interface = map(lambda state: '{1}State %s = SGraphFactory.eINSTANCE.createState();\n{1}%s.setName("%s"); \n{1}%s.setSpecification({0}); \n{1}region.getVertices().add(%s); \n{1}Node %sNode = ViewService.createNode(\n{1}getRegionCompartmentView(regionView), %s,\n{1}SemanticHints.STATE, preferencesHint);\n{1}setStateViewLayoutConstraint(%sNode);\n\n'.format(repr(specific_set_specification_content)[1:-1], indentation) % ((state,)*8), states_joined)
+        #import ipdb; ipdb.set_trace()
+        states_cleaned = set(states_joined)
+        formated_states_interface = map(lambda state: '{1}State %s = SGraphFactory.eINSTANCE.createState();\n{1}%s.setName("%s"); \n{1}%s.setSpecification({0}); \n{1}region.getVertices().add(%s); \n{1}Node %sNode = ViewService.createNode(\n{1}getRegionCompartmentView(regionView), %s,\n{1}SemanticHints.STATE, preferencesHint);\n{1}setStateViewLayoutConstraint(%sNode);\n\n'.format(repr(specific_set_specification_content)[1:-1], indentation) % ((state,)*8), states_cleaned)
         return formated_states_interface
 
     def _get_initial_state(self):
@@ -232,12 +228,14 @@ class YakinduParser(object):
     def create_initial_state_interface(self):
         formated_initial_state_interface = []
         initial_state_joined = []
+        initial_state_cleaned = []
         states_selected = self._get_initial_state()
         indentation = 2*(4 * ' ')
-        for state in self._delete_duplicate_states(states_selected):
+        for state in states_selected:
             initial_state_joined.append(''.join(state))
-        for state in initial_state_joined:
-            formated_initial_state_interface.append('{0}Transition transition = SGraphFactory.eINSTANCE.createTransition();\n{0}transition.setSource(initialState);\n{0}transition.setTarget(%s);\n{0}initialState.getOutgoingTransitions().add(transition);\n{0}ViewService.createEdge(initialStateView, %sNode, transition,\n{0}SemanticHints.TRANSITION, preferencesHint);'.format(indentation) %((state,)*2))
+        initial_state_cleaned = set(initial_state_joined)
+        for state in initial_state_cleaned:
+            formated_initial_state_interface.append('{0}Transition transition = SGraphFactory.eINSTANCE.createTransition();\n{0}transition.setSource(initialState);\n{0}transition.setTarget(%s);\n{0}initialState.getOutgoingTransitions().add(transition);\n{0}ViewService.createEdge(initialStateView, %sNode, transition,\n{0}SemanticHints.TRANSITION, preferencesHint);\nthermostat'.format(indentation) %((state,)*2))
         return formated_initial_state_interface
 
     def _get_sequence_transitions(self):
@@ -285,7 +283,6 @@ class YakinduParser(object):
         for initial_state in self.create_initial_state_interface():
             class_content.append(initial_state)
         class_content.append(third_constant.read())
-        #import ipdb; ipdb.set_trace()
         class_factory_utils = open('FactoryUtils.java', 'w')
         for content in class_content:
             class_factory_utils.write(str(content))

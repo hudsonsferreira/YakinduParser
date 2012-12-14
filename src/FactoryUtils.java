@@ -104,29 +104,30 @@ public final class FactoryUtils {
         SemanticHints.STATE, preferencesHint);
         setStateViewLayoutConstraint(refrigeratordoorclosedNode);
 
-        State dooropened = SGraphFactory.eINSTANCE.createState();
-        dooropened.setName("dooropened"); 
-        dooropened.setSpecification("entry/\nlight.off = true;\nthermostat.minimum = true;\nlight.on = false;\nthermostat.maximum = false"); 
-        region.getVertices().add(dooropened); 
-        Node dooropenedNode = ViewService.createNode(
-        getRegionCompartmentView(regionView), dooropened,
+        State refrigeratordooropened = SGraphFactory.eINSTANCE.createState();
+        refrigeratordooropened.setName("refrigeratordooropened"); 
+        refrigeratordooropened.setSpecification("entry/\nlight.off = true;\nthermostat.minimum = true;\nlight.on = false;\nthermostat.maximum = false"); 
+        region.getVertices().add(refrigeratordooropened); 
+        Node refrigeratordooropenedNode = ViewService.createNode(
+        getRegionCompartmentView(regionView), refrigeratordooropened,
         SemanticHints.STATE, preferencesHint);
-        setStateViewLayoutConstraint(dooropenedNode);
+        setStateViewLayoutConstraint(refrigeratordooropenedNode);
 
         Transition opendoor = SGraphFactory.eINSTANCE.createTransition();
         opendoor.setSpecification("opendoor");
         opendoor.setSource(refrigeratordoorclosed);
-        opendoor.setTarget(dooropened);
+        opendoor.setTarget(refrigeratordooropened);
         Transition closedoor = SGraphFactory.eINSTANCE.createTransition();
         closedoor.setSpecification("closedoor");
-        closedoor.setSource(dooropened);
+        closedoor.setSource(refrigeratordooropened);
         closedoor.setTarget(refrigeratordoorclosed);
         Transition transition = SGraphFactory.eINSTANCE.createTransition();
         transition.setSource(initialState);
         transition.setTarget(refrigeratordoorclosed);
         initialState.getOutgoingTransitions().add(transition);
         ViewService.createEdge(initialStateView, refrigeratordoorclosedNode, transition,
-        SemanticHints.TRANSITION, preferencesHint);Node textCompartment = ViewService.createNode(diagram, statechart,
+        SemanticHints.TRANSITION, preferencesHint);
+thermostatNode textCompartment = ViewService.createNode(diagram, statechart,
                 SemanticHints.STATECHART_TEXT, preferencesHint);
         setTextCompartmentLayoutConstraint(textCompartment);
     }
