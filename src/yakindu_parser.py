@@ -290,4 +290,4 @@ class YakinduParser(object):
         for content in class_content:
             class_factory_utils.write(str(content))
         class_factory_utils.close()
-#OBS: falta tratar e incrementar as specifications dos states, esta foi feita na mao
+#OBS: falta tratar e incrementar as specifications dos states, esta foi feita na maoo
