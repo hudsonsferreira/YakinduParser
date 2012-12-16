@@ -1,4 +1,4 @@
-Node textCompartment = ViewService.createNode(diagram, statechart,
+        Node textCompartment = ViewService.createNode(diagram, statechart,
                 SemanticHints.STATECHART_TEXT, preferencesHint);
         setTextCompartmentLayoutConstraint(textCompartment);
     }

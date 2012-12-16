@@ -28,6 +28,7 @@ class YakinduParser(object):
             self._tags = ['initial_state', 'state', 'final_state', 'transition', 'end', 'choice', 'synchronization', 'specification']
         self._content_directory = mkdtemp(prefix="YakinduDirectory")
         self._file_name = self._content_directory + '/content.xml'
+        self._indentation = 4 * ' '
 
     def _valid_mimetype(self, path):
         return from_file(path, mime=True) == 'application/vnd.oasis.opendocument.text'
@@ -191,7 +192,7 @@ class YakinduParser(object):
         return '\n\ninterface:' + ''.join(formated_transition_events_interface)
 
     def create_default_specification(self):
-        set_specification_method = '        statechart.setSpecification('
+        set_specification_method = 2 * self._indentation + 'statechart.setSpecification('
         objects_interface = self._create_objects_interface()
         events_interface = self._create_events_interface()
         set_specification_content = '"' + objects_interface + events_interface + '"'
@@ -212,13 +213,12 @@ class YakinduParser(object):
         states_joined = []
         states_cleaned = []
         states_selected = self._get_states_content()
-        indentation = 2*(4 * ' ')
         specific_set_specification_content = '"' + 'entry/\nlight.off = true;\nthermostat.minimum = true;\nlight.on = false;\nthermostat.maximum = false' + '"'
         for state in states_selected:
             states_joined.append(''.join(state))
         #import ipdb; ipdb.set_trace()
         states_cleaned = set(states_joined)
-        formated_states_interface = map(lambda state: '{1}State %s = SGraphFactory.eINSTANCE.createState();\n{1}%s.setName("%s"); \n{1}%s.setSpecification({0}); \n{1}region.getVertices().add(%s); \n{1}Node %sNode = ViewService.createNode(\n{1}getRegionCompartmentView(regionView), %s,\n{1}SemanticHints.STATE, preferencesHint);\n{1}setStateViewLayoutConstraint(%sNode);\n\n'.format(repr(specific_set_specification_content)[1:-1], indentation) % ((state,)*8), states_cleaned)
+        formated_states_interface = map(lambda state: '{1}State %s = SGraphFactory.eINSTANCE.createState();\n{1}%s.setName("%s"); \n{1}%s.setSpecification({0}); \n{1}region.getVertices().add(%s); \n{1}Node %sNode = ViewService.createNode(\n{1}getRegionCompartmentView(regionView), %s,\n{1}SemanticHints.STATE, preferencesHint);\n{1}setStateViewLayoutConstraint(%sNode);\n\n'.format(repr(specific_set_specification_content)[1:-1], 2 * self._indentation) % ((state,)*8), states_cleaned)
         return formated_states_interface
 
     def _get_initial_state(self):
@@ -234,12 +234,11 @@ class YakinduParser(object):
         initial_state_joined = []
         initial_state_cleaned = []
         states_selected = self._get_initial_state()
-        indentation = 2*(4 * ' ')
         for state in states_selected:
             initial_state_joined.append(''.join(state))
         initial_state_cleaned = set(initial_state_joined)
         for state in initial_state_cleaned:
-            formated_initial_state_interface.append('{0}Transition transition = SGraphFactory.eINSTANCE.createTransition();\n{0}transition.setSource(initialState);\n{0}transition.setTarget(%s);\n{0}initialState.getOutgoingTransitions().add(transition);\n{0}ViewService.createEdge(initialStateView, %sNode, transition,\n{0}SemanticHints.TRANSITION, preferencesHint);\nthermostat'.format(indentation) %((state,)*2))
+            formated_initial_state_interface.append('{0}Transition transition = SGraphFactory.eINSTANCE.createTransition();\n{0}transition.setSource(initialState);\n{0}transition.setTarget(%s);\n\n{0}initialState.getOutgoingTransitions().add(transition);\n{0}ViewService.createEdge(initialStateView, %sNode, transition,\n{0}SemanticHints.TRANSITION, preferencesHint);\n'.format(2 * self._indentation) %((state,)*2))
         return formated_initial_state_interface
 
     def _get_sequence_transitions(self):
@@ -266,9 +265,8 @@ class YakinduParser(object):
 
     def create_transitions_interface(self):
         formated_transition_interface = []
-        indentation = 2*(4 * ' ')
         for item in self._join_sequence_transitions():
-            formated_transition_interface.append('{0}Transition %s = SGraphFactory.eINSTANCE.createTransition();\n{0}%s.setSpecification("%s");\n{0}%s.setSource(%s);\n{0}%s.setTarget(%s);\n'.format(indentation) %(item[1], item[1], item[1], item[1], item[0], item[1], item[2]))
+            formated_transition_interface.append('{0}Transition %s = SGraphFactory.eINSTANCE.createTransition();\n{0}%s.setSpecification("%s");\n{0}%s.setSource(%s);\n{0}%s.setTarget(%s);\n\n'.format(2 * self._indentation) %(item[1], item[1], item[1], item[1], item[0], item[1], item[2]))
         return formated_transition_interface
     
     def create_class_factory_utils(self):
@@ -277,7 +275,7 @@ class YakinduParser(object):
         second_constant = open('second_constant.txt', 'r')
         third_constant = open('third_constant.txt', 'r')
         class_content.append(first_constant.read())
-        class_content.append(self.create_set_specification())
+        class_content.append(self.create_default_specification())
         class_content.append(second_constant.read())
         #obs nao funcionou com list comprehension
         for state in self.create_states_interface():

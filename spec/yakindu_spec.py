@@ -96,7 +96,7 @@ class Yakindu_Spec(TestCase):
         self.parser._get_initial_state() |should| equal_to([['refrigerator', 'door', 'closed'], ['refrigerator', 'door', 'closed']])
 
     def test_if_initial_state_transition_was_created(self):
-        self.parser.create_initial_state_interface() |should| equal_to( ['        Transition transition = SGraphFactory.eINSTANCE.createTransition();\n        transition.setSource(initialState);\n        transition.setTarget(refrigeratordoorclosed);\n        initialState.getOutgoingTransitions().add(transition);\n        ViewService.createEdge(initialStateView, refrigeratordoorclosedNode, transition,\n        SemanticHints.TRANSITION, preferencesHint);\nthermostat'])
+        self.parser.create_initial_state_interface() |should| equal_to(['        Transition transition = SGraphFactory.eINSTANCE.createTransition();\n        transition.setSource(initialState);\n        transition.setTarget(refrigeratordoorclosed);\n\n        initialState.getOutgoingTransitions().add(transition);\n        ViewService.createEdge(initialStateView, refrigeratordoorclosedNode, transition,\n        SemanticHints.TRANSITION, preferencesHint);\n'])
     
     def test_if_sequence_transitions_were_taked(self):
         self.parser._get_sequence_transitions() |should| equal_to([[['refrigerator', 'door', 'closed'], ['open', 'door'], ['refrigerator', 'door', 'opened']], [['refrigerator', 'door', 'opened'], ['close', 'door'], ['refrigerator', 'door', 'closed']]])
@@ -105,7 +105,7 @@ class Yakindu_Spec(TestCase):
         self.parser._join_sequence_transitions() |should| equal_to([['refrigeratordoorclosed', 'opendoor', 'refrigeratordooropened'], ['refrigeratordooropened', 'closedoor', 'refrigeratordoorclosed']])
     
     def test_if_transitions_interface_were_created(self):
-        self.parser.create_transitions_interface() |should| equal_to(['        Transition opendoor = SGraphFactory.eINSTANCE.createTransition();\n        opendoor.setSpecification("opendoor");\n        opendoor.setSource(refrigeratordoorclosed);\n        opendoor.setTarget(refrigeratordooropened);\n', '        Transition closedoor = SGraphFactory.eINSTANCE.createTransition();\n        closedoor.setSpecification("closedoor");\n        closedoor.setSource(refrigeratordooropened);\n        closedoor.setTarget(refrigeratordoorclosed);\n'])
+        self.parser.create_transitions_interface() |should| equal_to(['        Transition opendoor = SGraphFactory.eINSTANCE.createTransition();\n        opendoor.setSpecification("opendoor");\n        opendoor.setSource(refrigeratordoorclosed);\n        opendoor.setTarget(refrigeratordooropened);\n\n', '        Transition closedoor = SGraphFactory.eINSTANCE.createTransition();\n        closedoor.setSpecification("closedoor");\n        closedoor.setSource(refrigeratordooropened);\n        closedoor.setTarget(refrigeratordoorclosed);\n\n'])
 
 
 if __name__ == '__main__':

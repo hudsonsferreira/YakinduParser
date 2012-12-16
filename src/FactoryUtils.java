@@ -117,17 +117,20 @@ public final class FactoryUtils {
         opendoor.setSpecification("opendoor");
         opendoor.setSource(refrigeratordoorclosed);
         opendoor.setTarget(refrigeratordooropened);
+
         Transition closedoor = SGraphFactory.eINSTANCE.createTransition();
         closedoor.setSpecification("closedoor");
         closedoor.setSource(refrigeratordooropened);
         closedoor.setTarget(refrigeratordoorclosed);
+
         Transition transition = SGraphFactory.eINSTANCE.createTransition();
         transition.setSource(initialState);
         transition.setTarget(refrigeratordoorclosed);
+
         initialState.getOutgoingTransitions().add(transition);
         ViewService.createEdge(initialStateView, refrigeratordoorclosedNode, transition,
         SemanticHints.TRANSITION, preferencesHint);
-thermostatNode textCompartment = ViewService.createNode(diagram, statechart,
+        Node textCompartment = ViewService.createNode(diagram, statechart,
                 SemanticHints.STATECHART_TEXT, preferencesHint);
         setTextCompartmentLayoutConstraint(textCompartment);
     }
