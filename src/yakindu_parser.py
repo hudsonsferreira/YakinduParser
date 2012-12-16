@@ -1,5 +1,5 @@
 from nltk.tokenize import sent_tokenize, word_tokenize, regexp_tokenize
-from nltk.util import clean_html, bigrams
+from nltk.util import clean_html, bigrams, trigrams
 from nltk.corpus.reader import PlaintextCorpusReader
 from nltk.data import load
 from nltk.probability import FreqDist
@@ -166,13 +166,17 @@ class YakinduParser(object):
 
     def _create_objects_interface(self):
         formated_objects_interface = []
-        initial_state_sent = list(chain(*[sent for sent in self.exchange_states() if sent[0][0] == 'initial_state']))
-        sub_sent = [chunk for chunk in initial_state_sent if chunk[0] == 'specification']
-        objects_specification = modified_groupby(sub_sent, key=lambda chunk: chunk[1])
-        for k, specification_chunks in objects_specification.items():
-            formated_objects_interface.append('\n\ninterface ' + k + ':')
+        specification = []
+        for sent in self.exchange_states():
+             for chunk in sent:
+                 if chunk[0] == 'specification':
+                     specification.append(trigrams([chunk[1], chunk[-2], self._convert_to_yakindu_type(type(chunk[-1]).__name__)]))
+        default_specification = list(OrderedSet(chain(*specification)))
+        objects_specification = modified_groupby(default_specification, key=lambda obj: obj[0])
+        for obj, specification_chunks in objects_specification.items():
+            formated_objects_interface.append('\n\ninterface ' + obj + ':')
             for chunk in specification_chunks:
-                 formated_objects_interface.append('\nvar ' + chunk[-2] + ':' + self._convert_to_yakindu_type(type(chunk[-1]).__name__))
+                 formated_objects_interface.append('\nvar ' + chunk[-2] + ':' + chunk[-1])               
         return ''.join(formated_objects_interface)
 
     def _create_events_interface(self):
@@ -183,10 +187,10 @@ class YakinduParser(object):
         for k, transition_chunks in events_interface.items():
             for chunk in transition_chunks:
                 transition_events_interface.append(chunk[1:])
-        formated_transition_events_interface = map(lambda x: '\nin event ' + ''.join(x), transition_events_interface)
+        formated_transition_events_interface = map(lambda event: '\nin event ' + ''.join(event), transition_events_interface)
         return '\n\ninterface:' + ''.join(formated_transition_events_interface)
 
-    def create_set_specification(self):
+    def create_default_specification(self):
         set_specification_method = '        statechart.setSpecification('
         objects_interface = self._create_objects_interface()
         events_interface = self._create_events_interface()
