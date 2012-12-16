@@ -80,8 +80,8 @@ class Yakindu_Spec(TestCase):
     def test_if_events_interface_are_created(self):
         self.parser._create_events_interface() |should| equal_to('\n\ninterface:\nin event opendoor\nin event closedoor')
    
-    def test_if_setSpecification_are_created(self):
-        self.parser.create_set_specification() |should| equal_to('        statechart.setSpecification("\\n\\ninterface light:\\nvar off:boolean\\nvar on:boolean\\n\\ninterface thermostat:\\nvar minimum:boolean\\nvar maximum:boolean\\n\\ninterface:\\nin event opendoor\\nin event closedoor");\n\n    ')
+    def test_if_default_specification_are_created(self):
+        self.parser.create_default_specification() |should| equal_to('        statechart.setSpecification("\\n\\ninterface light:\\nvar off:boolean\\nvar on:boolean\\n\\ninterface thermostat:\\nvar minimum:boolean\\nvar maximum:boolean\\n\\ninterface:\\nin event opendoor\\nin event closedoor");\n\n    ')
         
     def test_if_tmp_file_was_removed(self):
         exists(self.parser._content_directory + '/content.xml') |should_not| equal_to(True)
