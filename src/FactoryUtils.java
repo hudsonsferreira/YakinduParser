@@ -97,7 +97,7 @@ public final class FactoryUtils {
         
         State refrigeratordoorclosed = SGraphFactory.eINSTANCE.createState();
         refrigeratordoorclosed.setName("refrigeratordoorclosed"); 
-        refrigeratordoorclosed.setSpecification("entry/\nlight.off = true;\nthermostat.minimum = true;\nlight.on = false;\nthermostat.maximum = false"); 
+        refrigeratordoorclosed.setSpecification("entry/\nlight.off = true;\nlight.on = false;\nthermostat.minimum = true;\nthermostat.maximum = false"); 
         region.getVertices().add(refrigeratordoorclosed); 
         Node refrigeratordoorclosedNode = ViewService.createNode(
         getRegionCompartmentView(regionView), refrigeratordoorclosed,
@@ -106,7 +106,7 @@ public final class FactoryUtils {
 
         State refrigeratordooropened = SGraphFactory.eINSTANCE.createState();
         refrigeratordooropened.setName("refrigeratordooropened"); 
-        refrigeratordooropened.setSpecification("entry/\nlight.off = true;\nthermostat.minimum = true;\nlight.on = false;\nthermostat.maximum = false"); 
+        refrigeratordooropened.setSpecification("entry/\nlight.on = true;\nlight.off = false;\nthermostat.maximum = true;\nthermostat.minimum = false"); 
         region.getVertices().add(refrigeratordooropened); 
         Node refrigeratordooropenedNode = ViewService.createNode(
         getRegionCompartmentView(regionView), refrigeratordooropened,
