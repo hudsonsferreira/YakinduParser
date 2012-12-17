@@ -252,11 +252,12 @@ class YakinduParser(object):
             states_specification[state] = ''.join(specification).format('.', '=', ';', '\n')
         return states_specification
 
-    def create_states_interface(self):
-        states_specification = self.create_states_specification()
-        for joined_state, specific_set_specification_content in states_specification.items():
-            formated_states_interface = map(lambda state: '{1}State %s = SGraphFactory.eINSTANCE.createState();\n{1}%s.setName("%s"); \n{1}%s.setSpecification({0}); \n{1}region.getVertices().add(%s); \n{1}Node %sNode = ViewService.createNode(\n{1}getRegionCompartmentView(regionView), %s,\n{1}SemanticHints.STATE, preferencesHint);\n{1}setStateViewLayoutConstraint(%sNode);\n\n'.format(repr(specific_set_specification_content)[1:-1], 2 * self._indentation) % ((state,)*8), joined_state)
-        return formated_states_interface
+    def create_states_specification_interface(self):
+        states_specification_interface = self.create_states_specification()
+        specification_interface_process = '{1}State %s = SGraphFactory.eINSTANCE.createState();\n{1}%s.setName("%s"); \n{1}%s.setSpecification({0}); \n{1}region.getVertices().add(%s); \n{1}Node %sNode = ViewService.createNode(\n{1}getRegionCompartmentView(regionView), %s,\n{1}SemanticHints.STATE, preferencesHint);\n{1}setStateViewLayoutConstraint(%sNode);\n\n'
+        for joined_state, specific_set_specification_content in states_specification_interface.items():
+            states_specification_interface[joined_state] = specification_interface_process.format(repr(specific_set_specification_content)[1:-1], 2 * self._indentation) % ((joined_state,)*8)
+        return states_specification_interface
 
     def _join_sequence_transitions(self):
         sequence_joined = []
@@ -283,8 +284,9 @@ class YakinduParser(object):
         class_content.append(self.create_default_specification())
         class_content.append(second_constant.read())
         #obs nao funcionou com list comprehension
-        for state in self.create_states_interface():
-            class_content.append(state)
+        states_specification_interface = self.create_states_specification_interface()
+        for state, specification in states_specification_interface.items():
+            class_content.append(states_specification_interface[state])
         for transition in self.create_transitions_interface():
             class_content.append(transition)
         for initial_state in self.create_initial_state_interface():
