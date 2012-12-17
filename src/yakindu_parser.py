@@ -221,37 +221,42 @@ class YakinduParser(object):
         formated_states_interface = map(lambda state: '{1}State %s = SGraphFactory.eINSTANCE.createState();\n{1}%s.setName("%s"); \n{1}%s.setSpecification({0}); \n{1}region.getVertices().add(%s); \n{1}Node %sNode = ViewService.createNode(\n{1}getRegionCompartmentView(regionView), %s,\n{1}SemanticHints.STATE, preferencesHint);\n{1}setStateViewLayoutConstraint(%sNode);\n\n'.format(repr(specific_set_specification_content)[1:-1], 2 * self._indentation) % ((state,)*8), states_cleaned)
         return formated_states_interface
 
-    def _get_initial_state(self):
-        initial_state_list = []
-        for sent in self.exchange_states():
-            for chunk in sent:
-                if chunk[0] == 'initial_state':
-                    initial_state_list.append(chunk[1:])
-        return initial_state_list
-
-    def create_initial_state_interface(self):
-        formated_initial_state_interface = []
-        initial_state_joined = []
-        initial_state_cleaned = []
-        states_selected = self._get_initial_state()
-        for state in states_selected:
-            initial_state_joined.append(''.join(state))
-        initial_state_cleaned = set(initial_state_joined)
-        for state in initial_state_cleaned:
-            formated_initial_state_interface.append('{0}Transition transition = SGraphFactory.eINSTANCE.createTransition();\n{0}transition.setSource(initialState);\n{0}transition.setTarget(%s);\n\n{0}initialState.getOutgoingTransitions().add(transition);\n{0}ViewService.createEdge(initialStateView, %sNode, transition,\n{0}SemanticHints.TRANSITION, preferencesHint);\n'.format(2 * self._indentation) %((state,)*2))
-        return formated_initial_state_interface
-
-    def _get_sequence_transitions(self):
+    def _get_states_content(self):
         state_tags = ['initial_state', 'state', 'final_state']
-        list_sequence = []
-        list_transitions = []
+        states_interface = []
+        states_interface_capitalized = []
         for sent in self.exchange_states():
             for chunk in sent:
-                if chunk[0] in state_tags or chunk[0] == 'transition':
-                    list_sequence.append(chunk[1:])
-        for i in range(2, len(list_sequence), 2):
-            list_transitions.append(list_sequence[i-2:i+1])
-        return list_transitions
+                if chunk[0] in state_tags:
+                    states_interface.append(''.join(chunk[1:]))
+        joined_states = list(OrderedSet(states_interface))      
+        return joined_states
+
+    def create_states_specification(self):
+        states = []
+        specification = []
+        states_specification_content = []
+        for sent in self.exchange_states():
+            specification.append([list(chain(*trigrams([chunk[1] + '{0}', chunk[-2] + ' {1} ', str(chunk[-1]).lower() + '{2}{3}']))) for chunk in sent if chunk[0] == 'specification'])
+        while [] in specification:
+            specification.remove([])
+        for spec in specification:
+            spec[0].insert(0, 'entry/\n')
+            spec[-1][-1] = spec[-1][-1].rstrip('{2}{3}')
+        states_specification = dict(izip(self._get_states_content(), specification))
+        for state, specification in states_specification.items():
+            states_specification[state] = list(chain(*specification))
+            states_specification[state].insert(0, '"')
+            states_specification[state].append('"')
+        for state, specification in states_specification.items():
+            states_specification[state] = ''.join(specification).format('.', '=', ';', '\n')
+        return states_specification
+
+    def create_states_interface(self):
+        states_specification = self.create_states_specification()
+        for joined_state, specific_set_specification_content in states_specification.items():
+            formated_states_interface = map(lambda state: '{1}State %s = SGraphFactory.eINSTANCE.createState();\n{1}%s.setName("%s"); \n{1}%s.setSpecification({0}); \n{1}region.getVertices().add(%s); \n{1}Node %sNode = ViewService.createNode(\n{1}getRegionCompartmentView(regionView), %s,\n{1}SemanticHints.STATE, preferencesHint);\n{1}setStateViewLayoutConstraint(%sNode);\n\n'.format(repr(specific_set_specification_content)[1:-1], 2 * self._indentation) % ((state,)*8), joined_state)
+        return formated_states_interface
 
     def _join_sequence_transitions(self):
         sequence_joined = []
