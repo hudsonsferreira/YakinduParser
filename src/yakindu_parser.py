@@ -294,7 +294,7 @@ class YakinduParser(object):
         states_specification_interface = self.create_states_specification_interface()
         for state, specification in states_specification_interface.items():
             class_content.append(states_specification_interface[state])
-        for transition in self.create_transitions_interface(): # deu merda
+        for transition in self.create_transitions_interface():
             class_content.append(transition)
         for initial_state in self.create_initial_state_interface():
             class_content.append(initial_state)
