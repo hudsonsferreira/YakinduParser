@@ -41,7 +41,6 @@ class YakinduParser(object):
         extracted_doc_name = 'content.xml'
         raw_content_text = PlaintextCorpusReader(self._content_directory, extracted_doc_name).raw()
         cleaned_text = clean_html(raw_content_text)
-        #import ipdb; ipdb.set_trace()
         raw_content = sub(r'\w+ \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2} ', '', cleaned_text)
         tiny_raw_content = raw_content.lower()
         return tiny_raw_content
@@ -292,7 +291,6 @@ class YakinduParser(object):
         class_content.append(first_constant.read())
         class_content.append(self.create_default_specification())
         class_content.append(second_constant.read())
-        #obs nao funcionou com list comprehension
         states_specification_interface = self.create_states_specification_interface()
         for state, specification in states_specification_interface.items():
             class_content.append(states_specification_interface[state])
@@ -305,4 +303,3 @@ class YakinduParser(object):
         for content in class_content:
             class_factory_utils.write(str(content))
         class_factory_utils.close()
-#OBS: falta tratar e incrementar as specifications dos states, esta foi feita na maoo
