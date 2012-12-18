@@ -252,7 +252,7 @@ class YakinduParser(object):
             initial_state_joined.append(''.join(state))
         initial_state_cleaned = set(initial_state_joined)
         for state in initial_state_cleaned:
-            formated_initial_state_interface.append('{0}Transition transition = SGraphFactory.eINSTANCE.createTransition();\n{0}transition.setSource(initialState);\n{0}transition.setTarget(%s);\n\n{0}initialState.getOutgoingTransitions().add(transition);\n{0}ViewService.createEdge(initialStateView, %sNode, transition,\n{0}SemanticHints.TRANSITION, preferencesHint);\n'.format(2 * self._indentation) %((state,)*2))
+            formated_initial_state_interface.append('{0}Transition transition = SGraphFactory.eINSTANCE.createTransition();\n{0}transition.setSource(initialState);\n{0}transition.setTarget(%s);\n{0}initialState.getOutgoingTransitions().add(transition);\n{0}ViewService.createEdge(initialStateView, %sNode, transition,\n{0}SemanticHints.TRANSITION, preferencesHint);\n'.format(2 * self._indentation) %((state,)*2))
         return formated_initial_state_interface
 
     def _get_sequence_transitions(self):
