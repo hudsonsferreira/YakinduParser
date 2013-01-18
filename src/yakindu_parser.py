@@ -249,9 +249,6 @@ class YakinduParser(object):
             counter_y += 250
             #construction
 
-        
-
-
     def _get_initial_state(self):
         initial_state_list = []
         for sent in self.exchange_states():

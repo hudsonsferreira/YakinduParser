@@ -88,7 +88,7 @@ class Yakindu_Spec(TestCase):
     
     def test_if_states_were_taked(self):
         self.parser._get_states_content() |should| equal_to(['refrigeratordoorclosed', 'refrigeratordooropened'])
-
+    
     def test_if_states_interface_was_created(self):
         self.parser.create_states_specification_interface() |should| equal_to({'refrigeratordoorclosed': '        State refrigeratordoorclosed = SGraphFactory.eINSTANCE.createState();\n        refrigeratordoorclosed.setName("refrigeratordoorclosed"); \n        refrigeratordoorclosed.setSpecification("entry/\\nlight.off = true;\\nlight.on = false;\\nthermostat.minimum = true;\\nthermostat.maximum = false"); \n        region.getVertices().add(refrigeratordoorclosed); \n        Node refrigeratordoorclosedNode = ViewService.createNode(\n        getRegionCompartmentView(regionView), refrigeratordoorclosed,\n        SemanticHints.STATE, preferencesHint);\n        setStateViewLayoutConstraint(refrigeratordoorclosedNode);\n\n', 'refrigeratordooropened': '        State refrigeratordooropened = SGraphFactory.eINSTANCE.createState();\n        refrigeratordooropened.setName("refrigeratordooropened"); \n        refrigeratordooropened.setSpecification("entry/\\nlight.on = true;\\nlight.off = false;\\nthermostat.maximum = true;\\nthermostat.minimum = false"); \n        region.getVertices().add(refrigeratordooropened); \n        Node refrigeratordooropenedNode = ViewService.createNode(\n        getRegionCompartmentView(regionView), refrigeratordooropened,\n        SemanticHints.STATE, preferencesHint);\n        setStateViewLayoutConstraint(refrigeratordooropenedNode);\n\n'})
     
@@ -107,7 +107,8 @@ class Yakindu_Spec(TestCase):
     def test_if_transitions_interface_were_created(self):
         self.parser.create_transitions_interface() |should| equal_to(['        Transition opendoor = SGraphFactory.eINSTANCE.createTransition();\n        opendoor.setSpecification("opendoor");\n        opendoor.setSource(refrigeratordoorclosed);\n        opendoor.setTarget(refrigeratordooropened);\n\n', '        Transition closedoor = SGraphFactory.eINSTANCE.createTransition();\n        closedoor.setSpecification("closedoor");\n        closedoor.setSource(refrigeratordooropened);\n        closedoor.setTarget(refrigeratordoorclosed);\n\n'])
 
-
+    def test_if_class_FactoryUtils_was_created(self):
+        exists("/home/hudson/yakindu-parser/src/FactoryUtils.java") |should| equal_to(True)
 if __name__ == '__main__':
     unittest.main()
 
