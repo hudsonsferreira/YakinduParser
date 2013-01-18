@@ -299,9 +299,9 @@ class YakinduParser(object):
     
     def create_class_factory_utils(self):
         class_content = []
-        first_constant = open('first_constant.txt', 'r')
-        second_constant = open('second_constant.txt', 'r')
-        third_constant = open('third_constant.txt', 'r')
+        first_constant = open('../yakindu-parser/src/first_constant.txt', 'r')
+        second_constant = open('../yakindu-parser/src/second_constant.txt', 'r')
+        third_constant = open('../yakindu-parser/src/third_constant.txt', 'r')
         class_content.append(first_constant.read())
         class_content.append(self.create_default_specification())
         class_content.append(second_constant.read())
@@ -313,7 +313,7 @@ class YakinduParser(object):
         for initial_state in self.create_initial_state_interface():
             class_content.append(initial_state)
         class_content.append(third_constant.read())
-        class_factory_utils = open('FactoryUtils.java', 'w')
+        class_factory_utils = open('../yakindu-parser/src/FactoryUtils.java', 'w')
         for content in class_content:
             class_factory_utils.write(str(content))
         class_factory_utils.close()

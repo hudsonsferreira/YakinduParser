@@ -84,7 +84,8 @@ class Yakindu_Spec(TestCase):
         self.parser.create_default_specification() |should| equal_to('        statechart.setSpecification("\\n\\ninterface light:\\nvar off:boolean\\nvar on:boolean\\n\\ninterface thermostat:\\nvar minimum:boolean\\nvar maximum:boolean\\n\\ninterface:\\nin event opendoor\\nin event closedoor");\n\n    ')
         
     def test_if_tmp_file_was_removed(self):
-        exists(self.parser._content_directory + '/content.xml') |should_not| equal_to(True)
+        self.parser._remove_directory()
+        exists(self.parser._content_directory + '/content.xml') |should| equal_to(False)
     
     def test_if_states_were_taked(self):
         self.parser._get_states_content() |should| equal_to(['refrigeratordoorclosed', 'refrigeratordooropened'])
@@ -108,7 +109,9 @@ class Yakindu_Spec(TestCase):
         self.parser.create_transitions_interface() |should| equal_to(['        Transition opendoor = SGraphFactory.eINSTANCE.createTransition();\n        opendoor.setSpecification("opendoor");\n        opendoor.setSource(refrigeratordoorclosed);\n        opendoor.setTarget(refrigeratordooropened);\n\n', '        Transition closedoor = SGraphFactory.eINSTANCE.createTransition();\n        closedoor.setSpecification("closedoor");\n        closedoor.setSource(refrigeratordooropened);\n        closedoor.setTarget(refrigeratordoorclosed);\n\n'])
 
     def test_if_class_FactoryUtils_was_created(self):
-        exists("/home/hudson/yakindu-parser/src/FactoryUtils.java") |should| equal_to(True)
+        self.parser.create_class_factory_utils()
+        exists("../yakindu-parser/src/FactoryUtils.java") |should| equal_to(True)
+        
 if __name__ == '__main__':
     unittest.main()
 
