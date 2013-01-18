@@ -228,12 +228,29 @@ class YakinduParser(object):
             states_specification[state] = ''.join(specification).format('.', '=', ';', '\n')
         return states_specification
 
+
     def create_states_specification_interface(self):
         states_specification_interface = self.create_states_specification()
         specification_interface_process = '{1}State %s = SGraphFactory.eINSTANCE.createState();\n{1}%s.setName("%s"); \n{1}%s.setSpecification({0}); \n{1}region.getVertices().add(%s); \n{1}Node %sNode = ViewService.createNode(\n{1}getRegionCompartmentView(regionView), %s,\n{1}SemanticHints.STATE, preferencesHint);\n{1}setStateViewLayoutConstraint(%sNode);\n\n'
         for joined_state, specific_set_specification_content in states_specification_interface.items():
             states_specification_interface[joined_state] = specification_interface_process.format(repr(specific_set_specification_content)[1:-1], 2 * self._indentation) % ((joined_state,)*8)
         return states_specification_interface
+
+   #import ipdb; ipdb.set_trace()   
+
+    def create_states_layout_methods(self):
+        states = self._get_states_content()
+        layout_method_process = "{1}private static void setStateViewLayoutConstraint%s(Node %sNode) {\nBounds bounds = NotationFactory.eINSTANCE.createBounds(); \n{1}bounds.setX(%d); \n{1}bounds.setY(%d); \n{1}%sNode.setLayoutConstraint(bounds);\n{1}}".format(2 * self._indentation) %(((state,)*2), counter_x, counter_y, state)
+        counter_x = 0
+        counter_y = 0
+        states_layout_list = []
+        for state in states:
+            counter_x += 100
+            counter_y += 250
+            #construction
+
+        
+
 
     def _get_initial_state(self):
         initial_state_list = []

@@ -126,7 +126,6 @@ public final class FactoryUtils {
         Transition transition = SGraphFactory.eINSTANCE.createTransition();
         transition.setSource(initialState);
         transition.setTarget(refrigeratordoorclosed);
-
         initialState.getOutgoingTransitions().add(transition);
         ViewService.createEdge(initialStateView, refrigeratordoorclosedNode, transition,
         SemanticHints.TRANSITION, preferencesHint);
