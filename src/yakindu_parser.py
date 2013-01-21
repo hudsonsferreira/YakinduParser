@@ -15,11 +15,13 @@ from shutil import rmtree
 from tempfile import mkdtemp
 from nltk.stem import WordNetLemmatizer
 from groupby import modified_groupby
-
+import os
 
 class YakinduParser(object):
     
     def __init__(self, path):
+        self.root_path = os.getcwd().replace('/src', '')
+
         if not exists(path) or not self._valid_mimetype(path):
             raise NameError("Invalid file")
         else:
@@ -265,7 +267,7 @@ class YakinduParser(object):
             initial_state_joined.append(''.join(state))
         initial_state_cleaned = set(initial_state_joined)
         for state in initial_state_cleaned:
-            formated_initial_state_interface.append('{0}Transition transition = SGraphFactory.eINSTANCE.createTransition();\n{0}transition.setSource(initialState);\n{0}transition.setTarget(%s);\n{0}initialState.getOutgoingTransitions().add(transition);\n{0}ViewService.createEdge(initialStateView, %sNode, transition,\n{0}SemanticHints.TRANSITION, preferencesHint);\n'.format(2 * self._indentation) %((state,)*2))
+            formated_initial_state_interface.append('{0}Transition transition = SGraphFactory.eINSTANCE.createTransition();\n{0}transition.setSource(initialState);\n{0}transition.setTarget(%s);\n{0}initialState.getOutgoingTransitions().add(transition);\n{0}ViewService.createEdge(initialStateView, %sNode, transition,\n{0}SemanticHints.TRANSITION, preferencesHint);\n{0}Node textCompartment = ViewService.createNode(diagram, statechart,\n{0}SemanticHints.STATECHART_TEXT, preferencesHint);\n{0}setTextCompartmentLayoutConstraint(textCompartment);\n{0}}}'.format(2 * self._indentation) %((state,)*2))
         return formated_initial_state_interface
 
     def _get_sequence_transitions(self):
@@ -298,9 +300,9 @@ class YakinduParser(object):
     
     def create_class_factory_utils(self):
         class_content = []
-        first_constant = open('../yakindu-parser/src/first_constant.txt', 'r')
-        second_constant = open('../yakindu-parser/src/second_constant.txt', 'r')
-        third_constant = open('../yakindu-parser/src/third_constant.txt', 'r')
+        first_constant = open(self.root_path + '/src/first_constant.txt', 'r')
+        second_constant = open(self.root_path + '/src/second_constant.txt', 'r')
+        third_constant = open(self.root_path + '/src/third_constant.txt', 'r')
         class_content.append(first_constant.read())
         class_content.append(self.create_default_specification())
         class_content.append(second_constant.read())
@@ -311,8 +313,8 @@ class YakinduParser(object):
             class_content.append(transition)
         for initial_state in self.create_initial_state_interface():
             class_content.append(initial_state)
-        class_content.append(third_constant.read())
-        class_factory_utils = open('../yakindu-parser/src/FactoryUtils.java', 'w')
+            class_content.append(third_constant.read())
+        class_factory_utils = open(self.root_path + '/src/FactoryUtils.java', 'w')
         for content in class_content:
             class_factory_utils.write(str(content))
         class_factory_utils.close()

@@ -97,7 +97,7 @@ class Yakindu_Spec(TestCase):
         self.parser._get_initial_state() |should| equal_to([['refrigerator', 'door', 'closed'], ['refrigerator', 'door', 'closed']])
 
     def test_if_initial_state_transition_was_created(self):
-        self.parser.create_initial_state_interface() |should| equal_to(['        Transition transition = SGraphFactory.eINSTANCE.createTransition();\n        transition.setSource(initialState);\n        transition.setTarget(refrigeratordoorclosed);\n        initialState.getOutgoingTransitions().add(transition);\n        ViewService.createEdge(initialStateView, refrigeratordoorclosedNode, transition,\n        SemanticHints.TRANSITION, preferencesHint);\n'])
+        self.parser.create_initial_state_interface() |should| equal_to(['        Transition transition = SGraphFactory.eINSTANCE.createTransition();\n        transition.setSource(initialState);\n        transition.setTarget(refrigeratordoorclosed);\n        initialState.getOutgoingTransitions().add(transition);\n        ViewService.createEdge(initialStateView, refrigeratordoorclosedNode, transition,\n        SemanticHints.TRANSITION, preferencesHint);\n        Node textCompartment = ViewService.createNode(diagram, statechart,\n        SemanticHints.STATECHART_TEXT, preferencesHint);\n        setTextCompartmentLayoutConstraint(textCompartment);\n        }'])
     
     def test_if_sequence_transitions_were_taked(self):
         self.parser._get_sequence_transitions() |should| equal_to([[['refrigerator', 'door', 'closed'], ['open', 'door'], ['refrigerator', 'door', 'opened']], [['refrigerator', 'door', 'opened'], ['close', 'door'], ['refrigerator', 'door', 'closed']]])

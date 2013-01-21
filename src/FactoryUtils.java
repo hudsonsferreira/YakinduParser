@@ -130,11 +130,9 @@ public final class FactoryUtils {
         ViewService.createEdge(initialStateView, refrigeratordoorclosedNode, transition,
         SemanticHints.TRANSITION, preferencesHint);
         Node textCompartment = ViewService.createNode(diagram, statechart,
-                SemanticHints.STATECHART_TEXT, preferencesHint);
+        SemanticHints.STATECHART_TEXT, preferencesHint);
         setTextCompartmentLayoutConstraint(textCompartment);
-    }
-
-    private static void setStateViewLayoutConstraint(Node stateNode) {
+        }    private static void setStateViewLayoutConstraint(Node stateNode) {
         Bounds bounds = NotationFactory.eINSTANCE.createBounds();
         bounds.setX(40);
         bounds.setY(80);
