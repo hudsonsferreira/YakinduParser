@@ -236,18 +236,17 @@ class YakinduParser(object):
             states_specification_interface[joined_state] = specification_interface_process.format(repr(specific_set_specification_content)[1:-1], 2 * self._indentation) % ((joined_state,)*8)
         return states_specification_interface
 
-   #import ipdb; ipdb.set_trace()   
-
     def create_states_layout_methods(self):
         states = self._get_states_content()
-        layout_method_process = "{1}private static void setStateViewLayoutConstraint%s(Node %sNode) {\nBounds bounds = NotationFactory.eINSTANCE.createBounds(); \n{1}bounds.setX(%d); \n{1}bounds.setY(%d); \n{1}%sNode.setLayoutConstraint(bounds);\n{1}}".format(2 * self._indentation) %(((state,)*2), counter_x, counter_y, state)
         counter_x = 0
         counter_y = 0
         states_layout_list = []
         for state in states:
             counter_x += 100
             counter_y += 250
-            #construction
+            #import ipdb; ipdb.set_trace()
+            states_layout_list.append('{0}private static void setStateViewLayoutConstraint%s(Node %sNode) {{\n{0}Bounds bounds%sNode = NotationFactory.eINSTANCE.createBounds();\n{0}bounds%sNode.setX(%d);\n{0}bounds%sNode.setY(%d);\n{0}%sNode.setLayoutConstraint(bounds%sNode);\n{0}}}'.format(2 * self._indentation) %(state, state, state, state, counter_x, state, counter_y, state, state))
+        return states_layout_list
 
     def _get_initial_state(self):
         initial_state_list = []
@@ -317,3 +316,4 @@ class YakinduParser(object):
         for content in class_content:
             class_factory_utils.write(str(content))
         class_factory_utils.close()
+

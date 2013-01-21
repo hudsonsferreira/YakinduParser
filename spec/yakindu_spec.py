@@ -8,10 +8,10 @@ from yakindu_parser import YakinduParser
 class Yakindu_Spec(TestCase):
 
     def setUp(self):
-        self.parser = YakinduParser('spec/resources/geladeira.odt')
+        self.parser = YakinduParser('spec/resources/refrigerator.odt')
     
     def test_if_file_exists(self):
-        (YakinduParser, 'spec/resources/geladeira.odt') |should_not| throw(NameError)
+        (YakinduParser, 'spec/resources/refrigerator.odt') |should_not| throw(NameError)
 
     def test_if_file_not_exists(self):
         (YakinduParser, 'spec/resources/not_exist') |should| throw(NameError)
@@ -108,6 +108,9 @@ class Yakindu_Spec(TestCase):
     def test_if_transitions_interface_were_created(self):
         self.parser.create_transitions_interface() |should| equal_to(['        Transition opendoor = SGraphFactory.eINSTANCE.createTransition();\n        opendoor.setSpecification("opendoor");\n        opendoor.setSource(refrigeratordoorclosed);\n        opendoor.setTarget(refrigeratordooropened);\n\n', '        Transition closedoor = SGraphFactory.eINSTANCE.createTransition();\n        closedoor.setSpecification("closedoor");\n        closedoor.setSource(refrigeratordooropened);\n        closedoor.setTarget(refrigeratordoorclosed);\n\n'])
 
+    def test_if_states_layout_methods_were_created(self):
+        self.parser.create_states_layout_methods() |should| equal_to( ['        private static void setStateViewLayoutConstraintrefrigeratordoorclosed(Node refrigeratordoorclosedNode) {\n        Bounds boundsrefrigeratordoorclosedNode = NotationFactory.eINSTANCE.createBounds();\n        boundsrefrigeratordoorclosedNode.setX(100);\n        boundsrefrigeratordoorclosedNode.setY(250);\n        refrigeratordoorclosedNode.setLayoutConstraint(boundsrefrigeratordoorclosedNode);\n        }', '        private static void setStateViewLayoutConstraintrefrigeratordooropened(Node refrigeratordooropenedNode) {\n        Bounds boundsrefrigeratordooropenedNode = NotationFactory.eINSTANCE.createBounds();\n        boundsrefrigeratordooropenedNode.setX(200);\n        boundsrefrigeratordooropenedNode.setY(500);\n        refrigeratordooropenedNode.setLayoutConstraint(boundsrefrigeratordooropenedNode);\n        }'])
+ 
     def test_if_class_FactoryUtils_was_created(self):
         self.parser.create_class_factory_utils()
         exists("../yakindu-parser/src/FactoryUtils.java") |should| equal_to(True)
