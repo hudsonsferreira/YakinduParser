@@ -240,12 +240,15 @@ class YakinduParser(object):
 
     def create_states_layout_methods(self):
         states = self._get_states_content()
-        counter_x = 0
-        counter_y = 0
+        counter_x = 50
+        aux_cont = 0
+
+        counter_y = 60
         states_layout_list = []
         for state in states:
-            counter_x += 100
-            counter_y += 250
+            aux_cont += 1
+            if aux_cont == 2:
+                counter_x += 300
             #import ipdb; ipdb.set_trace()
             states_layout_list.append('{0}private static void setStateViewLayoutConstraint%s(Node %sNode) {{\n{0}Bounds bounds%sNode = NotationFactory.eINSTANCE.createBounds();\n{0}bounds%sNode.setX(%d);\n{0}bounds%sNode.setY(%d);\n{0}%sNode.setLayoutConstraint(bounds%sNode);\n{0}}}\n\n'.format(self._indentation) %(state, state, state, state, counter_x, state, counter_y, state, state))
         return states_layout_list

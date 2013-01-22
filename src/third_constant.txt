@@ -2,7 +2,7 @@
     private static void setInitialStateViewLayoutConstraint(
             Node initialStateView) {
         Bounds bounds = NotationFactory.eINSTANCE.createBounds();
-        bounds.setX(70);
+        bounds.setX(100);
         bounds.setY(20);
         initialStateView.setLayoutConstraint(bounds);
     }

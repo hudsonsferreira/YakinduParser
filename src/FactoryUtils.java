@@ -26,7 +26,7 @@ import org.yakindu.sct.ui.editor.providers.SemanticHints;
 
 public final class FactoryUtils {
 
-    private static final int INITIAL_REGION_WIDTH = 400;
+    private static final int INITIAL_REGION_WIDTH = 600;
     private static final int INITIAL_REGION_HEIGHT = 400;
     private static final String INITIAL_REGION_NAME = "main region";
 
@@ -75,17 +75,17 @@ public final class FactoryUtils {
         Diagram diagram = ViewService.createDiagram(statechart,
                 StatechartDiagramEditor.ID, preferencesHint);
         diagram.setElement(statechart);
-        // Add to resource
+
         resource.getContents().add(statechart);
         resource.getContents().add(diagram);
-        // Create an initial region
+
         Region region = SGraphFactory.eINSTANCE.createRegion();
         region.setName(INITIAL_REGION_NAME);
         statechart.getRegions().add(region);
         Node regionView = ViewService.createNode(diagram, region,
                 SemanticHints.REGION, preferencesHint);
         setRegionViewLayoutConstraint(regionView);
-        // // Create an initial state
+
         Entry initialState = SGraphFactory.eINSTANCE.createEntry();
         initialState.setKind(EntryKind.INITIAL);
         region.getVertices().add(initialState);
@@ -136,15 +136,15 @@ public final class FactoryUtils {
 
     private static void setStateViewLayoutConstraintrefrigeratordoorclosed(Node refrigeratordoorclosedNode) {
     Bounds boundsrefrigeratordoorclosedNode = NotationFactory.eINSTANCE.createBounds();
-    boundsrefrigeratordoorclosedNode.setX(100);
-    boundsrefrigeratordoorclosedNode.setY(250);
+    boundsrefrigeratordoorclosedNode.setX(50);
+    boundsrefrigeratordoorclosedNode.setY(60);
     refrigeratordoorclosedNode.setLayoutConstraint(boundsrefrigeratordoorclosedNode);
     }
 
     private static void setStateViewLayoutConstraintrefrigeratordooropened(Node refrigeratordooropenedNode) {
     Bounds boundsrefrigeratordooropenedNode = NotationFactory.eINSTANCE.createBounds();
-    boundsrefrigeratordooropenedNode.setX(200);
-    boundsrefrigeratordooropenedNode.setY(500);
+    boundsrefrigeratordooropenedNode.setX(350);
+    boundsrefrigeratordooropenedNode.setY(60);
     refrigeratordooropenedNode.setLayoutConstraint(boundsrefrigeratordooropenedNode);
     }
 
@@ -152,7 +152,7 @@ public final class FactoryUtils {
     private static void setInitialStateViewLayoutConstraint(
             Node initialStateView) {
         Bounds bounds = NotationFactory.eINSTANCE.createBounds();
-        bounds.setX(70);
+        bounds.setX(100);
         bounds.setY(20);
         initialStateView.setLayoutConstraint(bounds);
     }

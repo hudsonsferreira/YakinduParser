@@ -6,17 +6,17 @@
         Diagram diagram = ViewService.createDiagram(statechart,
                 StatechartDiagramEditor.ID, preferencesHint);
         diagram.setElement(statechart);
-        // Add to resource
+
         resource.getContents().add(statechart);
         resource.getContents().add(diagram);
-        // Create an initial region
+
         Region region = SGraphFactory.eINSTANCE.createRegion();
         region.setName(INITIAL_REGION_NAME);
         statechart.getRegions().add(region);
         Node regionView = ViewService.createNode(diagram, region,
                 SemanticHints.REGION, preferencesHint);
         setRegionViewLayoutConstraint(regionView);
-        // // Create an initial state
+
         Entry initialState = SGraphFactory.eINSTANCE.createEntry();
         initialState.setKind(EntryKind.INITIAL);
         region.getVertices().add(initialState);
