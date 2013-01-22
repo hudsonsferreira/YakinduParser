@@ -1,11 +1,4 @@
 
-    private static void setStateViewLayoutConstraint(Node stateNode) {
-        Bounds bounds = NotationFactory.eINSTANCE.createBounds();
-        bounds.setX(40);
-        bounds.setY(80);
-        stateNode.setLayoutConstraint(bounds);
-    }
-
     private static void setInitialStateViewLayoutConstraint(
             Node initialStateView) {
         Bounds bounds = NotationFactory.eINSTANCE.createBounds();

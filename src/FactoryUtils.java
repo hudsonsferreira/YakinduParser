@@ -102,7 +102,7 @@ public final class FactoryUtils {
         Node refrigeratordoorclosedNode = ViewService.createNode(
         getRegionCompartmentView(regionView), refrigeratordoorclosed,
         SemanticHints.STATE, preferencesHint);
-        setStateViewLayoutConstraint(refrigeratordoorclosedNode);
+        setStateViewLayoutConstraintrefrigeratordoorclosed(refrigeratordoorclosedNode);
 
         State refrigeratordooropened = SGraphFactory.eINSTANCE.createState();
         refrigeratordooropened.setName("refrigeratordooropened"); 
@@ -111,7 +111,7 @@ public final class FactoryUtils {
         Node refrigeratordooropenedNode = ViewService.createNode(
         getRegionCompartmentView(regionView), refrigeratordooropened,
         SemanticHints.STATE, preferencesHint);
-        setStateViewLayoutConstraint(refrigeratordooropenedNode);
+        setStateViewLayoutConstraintrefrigeratordooropened(refrigeratordooropenedNode);
 
         Transition opendoor = SGraphFactory.eINSTANCE.createTransition();
         opendoor.setSpecification("opendoor");
@@ -134,12 +134,20 @@ public final class FactoryUtils {
         setTextCompartmentLayoutConstraint(textCompartment);
         }
 
-    private static void setStateViewLayoutConstraint(Node stateNode) {
-        Bounds bounds = NotationFactory.eINSTANCE.createBounds();
-        bounds.setX(40);
-        bounds.setY(80);
-        stateNode.setLayoutConstraint(bounds);
+    private static void setStateViewLayoutConstraintrefrigeratordoorclosed(Node refrigeratordoorclosedNode) {
+    Bounds boundsrefrigeratordoorclosedNode = NotationFactory.eINSTANCE.createBounds();
+    boundsrefrigeratordoorclosedNode.setX(100);
+    boundsrefrigeratordoorclosedNode.setY(250);
+    refrigeratordoorclosedNode.setLayoutConstraint(boundsrefrigeratordoorclosedNode);
     }
+
+    private static void setStateViewLayoutConstraintrefrigeratordooropened(Node refrigeratordooropenedNode) {
+    Bounds boundsrefrigeratordooropenedNode = NotationFactory.eINSTANCE.createBounds();
+    boundsrefrigeratordooropenedNode.setX(200);
+    boundsrefrigeratordooropenedNode.setY(500);
+    refrigeratordooropenedNode.setLayoutConstraint(boundsrefrigeratordooropenedNode);
+    }
+
 
     private static void setInitialStateViewLayoutConstraint(
             Node initialStateView) {

@@ -233,9 +233,9 @@ class YakinduParser(object):
 
     def create_states_specification_interface(self):
         states_specification_interface = self.create_states_specification()
-        specification_interface_process = '{1}State %s = SGraphFactory.eINSTANCE.createState();\n{1}%s.setName("%s"); \n{1}%s.setSpecification({0}); \n{1}region.getVertices().add(%s); \n{1}Node %sNode = ViewService.createNode(\n{1}getRegionCompartmentView(regionView), %s,\n{1}SemanticHints.STATE, preferencesHint);\n{1}setStateViewLayoutConstraint(%sNode);\n\n'
+        specification_interface_process = '{1}State %s = SGraphFactory.eINSTANCE.createState();\n{1}%s.setName("%s"); \n{1}%s.setSpecification({0}); \n{1}region.getVertices().add(%s); \n{1}Node %sNode = ViewService.createNode(\n{1}getRegionCompartmentView(regionView), %s,\n{1}SemanticHints.STATE, preferencesHint);\n{1}setStateViewLayoutConstraint%s(%sNode);\n\n'
         for joined_state, specific_set_specification_content in states_specification_interface.items():
-            states_specification_interface[joined_state] = specification_interface_process.format(repr(specific_set_specification_content)[1:-1], 2 * self._indentation) % ((joined_state,)*8)
+            states_specification_interface[joined_state] = specification_interface_process.format(repr(specific_set_specification_content)[1:-1], 2 * self._indentation) % ((joined_state,)*9)
         return states_specification_interface
 
     def create_states_layout_methods(self):
@@ -247,7 +247,7 @@ class YakinduParser(object):
             counter_x += 100
             counter_y += 250
             #import ipdb; ipdb.set_trace()
-            states_layout_list.append('{0}private static void setStateViewLayoutConstraint%s(Node %sNode) {{\n{0}Bounds bounds%sNode = NotationFactory.eINSTANCE.createBounds();\n{0}bounds%sNode.setX(%d);\n{0}bounds%sNode.setY(%d);\n{0}%sNode.setLayoutConstraint(bounds%sNode);\n{0}}}'.format(2 * self._indentation) %(state, state, state, state, counter_x, state, counter_y, state, state))
+            states_layout_list.append('{0}private static void setStateViewLayoutConstraint%s(Node %sNode) {{\n{0}Bounds bounds%sNode = NotationFactory.eINSTANCE.createBounds();\n{0}bounds%sNode.setX(%d);\n{0}bounds%sNode.setY(%d);\n{0}%sNode.setLayoutConstraint(bounds%sNode);\n{0}}}\n\n'.format(self._indentation) %(state, state, state, state, counter_x, state, counter_y, state, state))
         return states_layout_list
 
     def _get_initial_state(self):
@@ -267,7 +267,7 @@ class YakinduParser(object):
             initial_state_joined.append(''.join(state))
         initial_state_cleaned = set(initial_state_joined)
         for state in initial_state_cleaned:
-            formated_initial_state_interface.append('{0}Transition transition = SGraphFactory.eINSTANCE.createTransition();\n{0}transition.setSource(initialState);\n{0}transition.setTarget(%s);\n{0}initialState.getOutgoingTransitions().add(transition);\n{0}ViewService.createEdge(initialStateView, %sNode, transition,\n{0}SemanticHints.TRANSITION, preferencesHint);\n{0}Node textCompartment = ViewService.createNode(diagram, statechart,\n{0}SemanticHints.STATECHART_TEXT, preferencesHint);\n{0}setTextCompartmentLayoutConstraint(textCompartment);\n{0}}}\n'.format(2 * self._indentation) %((state,)*2))
+            formated_initial_state_interface.append('{0}Transition transition = SGraphFactory.eINSTANCE.createTransition();\n{0}transition.setSource(initialState);\n{0}transition.setTarget(%s);\n{0}initialState.getOutgoingTransitions().add(transition);\n{0}ViewService.createEdge(initialStateView, %sNode, transition,\n{0}SemanticHints.TRANSITION, preferencesHint);\n{0}Node textCompartment = ViewService.createNode(diagram, statechart,\n{0}SemanticHints.STATECHART_TEXT, preferencesHint);\n{0}setTextCompartmentLayoutConstraint(textCompartment);\n{0}}}\n\n'.format(2 * self._indentation) %((state,)*2))
         return formated_initial_state_interface
 
     def _get_sequence_transitions(self):
@@ -313,7 +313,9 @@ class YakinduParser(object):
             class_content.append(transition)
         for initial_state in self.create_initial_state_interface():
             class_content.append(initial_state)
-            class_content.append(third_constant.read())
+        for state_layout in self.create_states_layout_methods():
+            class_content.append(state_layout)
+        class_content.append(third_constant.read())
         class_factory_utils = open(self.root_path + '/src/FactoryUtils.java', 'w')
         for content in class_content:
             class_factory_utils.write(str(content))
