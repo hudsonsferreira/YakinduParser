@@ -236,25 +236,90 @@ class Yakindu_Spec(TestCase):
         self.parser._get_states_content() |should| equal_to(['refrigeratordoorclosed', 'refrigeratordooropened'])
     
     def test_states_interface_was_created(self):
-        self.parser.create_states_specification_interface() |should| equal_to({'refrigeratordoorclosed': '        State refrigeratordoorclosed = SGraphFactory.eINSTANCE.createState();\n        refrigeratordoorclosed.setName("refrigeratordoorclosed"); \n        refrigeratordoorclosed.setSpecification("entry/\\nlight.off = true;\\nlight.on = false;\\nthermostat.minimum = true;\\nthermostat.maximum = false"); \n        region.getVertices().add(refrigeratordoorclosed); \n        Node refrigeratordoorclosedNode = ViewService.createNode(\n        getRegionCompartmentView(regionView), refrigeratordoorclosed,\n        SemanticHints.STATE, preferencesHint);\n        setStateViewLayoutConstraintrefrigeratordoorclosed(refrigeratordoorclosedNode);\n\n', 'refrigeratordooropened': '        State refrigeratordooropened = SGraphFactory.eINSTANCE.createState();\n        refrigeratordooropened.setName("refrigeratordooropened"); \n        refrigeratordooropened.setSpecification("entry/\\nlight.on = true;\\nlight.off = false;\\nthermostat.maximum = true;\\nthermostat.minimum = false"); \n        region.getVertices().add(refrigeratordooropened); \n        Node refrigeratordooropenedNode = ViewService.createNode(\n        getRegionCompartmentView(regionView), refrigeratordooropened,\n        SemanticHints.STATE, preferencesHint);\n        setStateViewLayoutConstraintrefrigeratordooropened(refrigeratordooropenedNode);\n\n'})
+        self.parser.create_states_specification_interface() \
+         |should| equal_to({'refrigeratordoorclosed': '        State refrigeratordoorclosed = SGraphFactory'+\
+          '.eINSTANCE.createState();\n        refrigeratordoorclosed.setName("refrigeratordoorclosed"); \n   '+\
+          '     refrigeratordoorclosed.setSpecification("entry/\\nlight.off = true;\\nlight.on = false;\\n'+\
+          'thermostat.minimum = true;\\nthermostat.maximum = false"); \n        region.getVertices().add'+\
+          '(refrigeratordoorclosed); \n        Node refrigeratordoorclosedNode = ViewService.createNode('+\
+          '\n        getRegionCompartmentView(regionView), refrigeratordoorclosed,\n        SemanticHints.STATE,'+\
+          ' preferencesHint);\n        setStateViewLayoutConstraintrefrigeratordoorclosed(refrigeratordoorclosedNode);'+\
+          '\n\n', 'refrigeratordooropened': '        State refrigeratordooropened = SGraphFactory.eINSTANCE.createState();'+\
+          '\n        refrigeratordooropened.setName("refrigeratordooropened"); \n        refrigeratordooropened.'+\
+          'setSpecification("entry/\\nlight.on = true;\\nlight.off = false;\\nthermostat.maximum = true;\\n'+\
+          'thermostat.minimum = false"); \n        region.getVertices().add(refrigeratordooropened); \n        '+\
+          'Node refrigeratordooropenedNode = ViewService.createNode(\n        getRegionCompartmentView(regionView),'+\
+          ' refrigeratordooropened,\n        SemanticHints.STATE, preferencesHint);\n        '+\
+          'setStateViewLayoutConstraintrefrigeratordooropened(refrigeratordooropenedNode);\n\n'})
     
     def test_initial_state_was_taked(self):
-        self.parser._get_initial_state() |should| equal_to([['refrigerator', 'door', 'closed'], ['refrigerator', 'door', 'closed']])
+        self.parser._get_initial_state() |should| equal_to([['refrigerator', 'door', 'closed'],
+                                                            ['refrigerator', 'door', 'closed']])
 
     def test_initial_state_transition_was_created(self):
-        self.parser.create_initial_state_interface() |should| equal_to(['        Transition transition = SGraphFactory.eINSTANCE.createTransition();\n        transition.setSource(initialState);\n        transition.setTarget(refrigeratordoorclosed);\n        initialState.getOutgoingTransitions().add(transition);\n        ViewService.createEdge(initialStateView, refrigeratordoorclosedNode, transition,\n        SemanticHints.TRANSITION, preferencesHint);\n        Node textCompartment = ViewService.createNode(diagram, statechart,\n        SemanticHints.STATECHART_TEXT, preferencesHint);\n        setTextCompartmentLayoutConstraint(textCompartment);\n        }\n\n'])
+        self.parser.create_initial_state_interface() |should| equal_to(['        Transition transition = '+\
+                                                                        'SGraphFactory.eINSTANCE.createTransition();'+\
+                                                                        '\n        transition.setSource(initialState);'+\
+                                                                        '\n        transition.setTarget'+\
+                                                                        '(refrigeratordoorclosed);\n        '+\
+                                                                        'initialState.getOutgoingTransitions()'+\
+                                                                        '.add(transition);\n        ViewService.'+\
+                                                                        'createEdge(initialStateView, '+\
+                                                                        'refrigeratordoorclosedNode, transition,'+\
+                                                                        '\n        SemanticHints.TRANSITION, '+\
+                                                                        'preferencesHint);\n        Node '+\
+                                                                        'textCompartment = ViewService.createNode'+\
+                                                                        '(diagram, statechart,\n        '+\
+                                                                        'SemanticHints.STATECHART_TEXT, preferencesHint);'+\
+                                                                        '\n        setTextCompartmentLayoutConstraint'+\
+                                                                        '(textCompartment);\n        }\n\n'])
     
     def test_sequence_transitions_were_taked(self):
-        self.parser._get_sequence_transitions() |should| equal_to([[['refrigerator', 'door', 'closed'], ['open', 'door'], ['refrigerator', 'door', 'opened']], [['refrigerator', 'door', 'opened'], ['close', 'door'], ['refrigerator', 'door', 'closed']]])
+        self.parser._get_sequence_transitions() |should| equal_to([[['refrigerator', 'door', 'closed'],
+                                                                    ['open', 'door'],
+                                                                    ['refrigerator', 'door', 'opened']],
+                                                                   [['refrigerator', 'door', 'opened'],
+                                                                    ['close', 'door'],
+                                                                    ['refrigerator', 'door', 'closed']]])
 
     def test_sequence_transitions_were_joined(self):
-        self.parser._join_sequence_transitions() |should| equal_to([['refrigeratordoorclosed', 'opendoor', 'refrigeratordooropened'], ['refrigeratordooropened', 'closedoor', 'refrigeratordoorclosed']])
+        self.parser._join_sequence_transitions() |should| equal_to([['refrigeratordoorclosed', 'opendoor',
+                                                                     'refrigeratordooropened'],
+                                                                    ['refrigeratordooropened', 'closedoor',
+                                                                    'refrigeratordoorclosed']])
     
     def test_transitions_interface_were_created(self):
-        self.parser.create_transitions_interface() |should| equal_to(['        Transition opendoor = SGraphFactory.eINSTANCE.createTransition();\n        opendoor.setSpecification("opendoor");\n        opendoor.setSource(refrigeratordoorclosed);\n        opendoor.setTarget(refrigeratordooropened);\n\n', '        Transition closedoor = SGraphFactory.eINSTANCE.createTransition();\n        closedoor.setSpecification("closedoor");\n        closedoor.setSource(refrigeratordooropened);\n        closedoor.setTarget(refrigeratordoorclosed);\n\n'])
+        self.parser.create_transitions_interface() |should| equal_to(['        Transition opendoor = '+\
+                                                                      'SGraphFactory.eINSTANCE.createTransition();'+\
+                                                                      '\n        opendoor.setSpecification("opendoor");'+\
+                                                                      '\n        opendoor.setSource(refrigeratordoorclosed);'+\
+                                                                      '\n        opendoor.setTarget(refrigeratordooropened);'+\
+                                                                      '\n\n', '        Transition closedoor = '+\
+                                                                      'SGraphFactory.eINSTANCE.createTransition();'+\
+                                                                      '\n        closedoor.setSpecification("closedoor");'+\
+                                                                      '\n        closedoor.setSource(refrigeratordooropened);'+\
+                                                                      '\n        closedoor.setTarget(refrigeratordoorclosed);+'
+                                                                      '\n\n'])
 
     def test_states_layout_methods_were_created(self):
-        self.parser.create_states_layout_methods() |should| equal_to(['    private static void setStateViewLayoutConstraintrefrigeratordoorclosed(Node refrigeratordoorclosedNode) {\n    Bounds boundsrefrigeratordoorclosedNode = NotationFactory.eINSTANCE.createBounds();\n    boundsrefrigeratordoorclosedNode.setX(50);\n    boundsrefrigeratordoorclosedNode.setY(60);\n    refrigeratordoorclosedNode.setLayoutConstraint(boundsrefrigeratordoorclosedNode);\n    }\n\n', '    private static void setStateViewLayoutConstraintrefrigeratordooropened(Node refrigeratordooropenedNode) {\n    Bounds boundsrefrigeratordooropenedNode = NotationFactory.eINSTANCE.createBounds();\n    boundsrefrigeratordooropenedNode.setX(350);\n    boundsrefrigeratordooropenedNode.setY(60);\n    refrigeratordooropenedNode.setLayoutConstraint(boundsrefrigeratordooropenedNode);\n    }\n\n'])
+        self.parser.create_states_layout_methods() |should| equal_to(['    private static void '+\
+                                                                      'setStateViewLayoutConstraintrefrigeratordoorclosed'+\
+                                                                      '(Node refrigeratordoorclosedNode) '+\
+                                                                      '{\n    Bounds boundsrefrigeratordoorclosedNode '+\
+                                                                      '= NotationFactory.eINSTANCE.createBounds();\n    '+\
+                                                                      'boundsrefrigeratordoorclosedNode.setX(50);\n    '+\
+                                                                      'boundsrefrigeratordoorclosedNode.setY(60);\n    '+\
+                                                                      'refrigeratordoorclosedNode.setLayoutConstraint'+\
+                                                                      '(boundsrefrigeratordoorclosedNode);\n    }\n\n',
+                                                                      '    private static void setStateViewLayout'+\
+                                                                      'Constraintrefrigeratordooropened(Node '+\
+                                                                      'refrigeratordooropenedNode) {\n    Bounds '+\
+                                                                      'boundsrefrigeratordooropenedNode = '+\
+                                                                      'NotationFactory.eINSTANCE.createBounds();\n    '+\
+                                                                      'boundsrefrigeratordooropenedNode.setX(350);\n    '+\
+                                                                      'boundsrefrigeratordooropenedNode.setY(60);\n    '+\
+                                                                      'refrigeratordooropenedNode.setLayoutConstraint'+\
+                                                                      '(boundsrefrigeratordooropenedNode);\n    }\n\n'])
  
     def test_class_FactoryUtils_was_created(self):
         self.parser.create_class_factory_utils()
