@@ -1,55 +1,54 @@
+import os
+from os.path import join, basename, dirname, exists
+from re import sub
+from itertools import izip, chain
+from StringIO import StringIO
+from zipfile import ZipFile
+from magic import from_file
 from nltk.tokenize import sent_tokenize, word_tokenize, regexp_tokenize
 from nltk.util import clean_html, bigrams, trigrams
 from nltk.corpus.reader import PlaintextCorpusReader
 from nltk.data import load
 from nltk.probability import FreqDist
+from nltk.stem import WordNetLemmatizer
 from string import punctuation
 from stopwords import STOPWORDS
-from os.path import join, basename, dirname, exists
-from os import system
-from re import sub
-from OrderedSet import OrderedSet
-from itertools import izip, chain
-from magic import from_file
-from shutil import rmtree
-from tempfile import mkdtemp
-from nltk.stem import WordNetLemmatizer
 from groupby import modified_groupby
-import os
+from OrderedSet import OrderedSet
+
+TAGS = ['initial_state',
+        'state',
+        'final_state',
+        'transition',
+        'end',
+        'choice',
+        'synchronization',
+        'specification']
 
 class YakinduParser(object):
     
     def __init__(self, path):
-        self.root_path = os.getcwd().replace('/src', '')
+        self.root_path = os.getcwd().replace('/parser', '')
 
         if not exists(path) or not self._valid_mimetype(path):
             raise NameError("Invalid file")
         else:
             self._name = basename(path)
             self._path = dirname(path)
-            self._tags = ['initial_state', 'state', 'final_state', 'transition', 'end', 'choice', 'synchronization', 'specification']
-        self._content_directory = mkdtemp(prefix="YakinduDirectory")
-        self._file_name = self._content_directory + '/content.xml'
-        self._indentation = 4 * ' '
+            content_file = ZipFile(StringIO(open(path).read()))
+            self._content = content_file.read('content.xml')
+            self._indentation = 4 * ' '
 
     def _valid_mimetype(self, path):
         return from_file(path, mime=True) == 'application/vnd.oasis.opendocument.text'
 
-    def _unzip_odt(self):
-        system('unzip %s/%s -d %s content.xml >>/dev/null' %(self._path, self._name, self._content_directory))
-
     def _clean_content(self):
-        self._unzip_odt()
-        extracted_doc_name = 'content.xml'
-        raw_content_text = PlaintextCorpusReader(self._content_directory, extracted_doc_name).raw()
+        raw_content_text = self._content
         cleaned_text = clean_html(raw_content_text)
         raw_content = sub(r'\w+ \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2} ', '', cleaned_text)
         tiny_raw_content = raw_content.lower()
         return tiny_raw_content
 
-    def _remove_directory(self):
-        rmtree(self._content_directory)
-    
     def _tokenize_content(self):
         tokenized_content = []
         raw_content = self._clean_content()
@@ -70,7 +69,7 @@ class YakinduParser(object):
         bigrams_of_tags_by_sent = []
         ordered_tags_by_sent = []
         for sent in self.tokenized_content:
-            tags_into_tokenized_content.append([tag for tag in sent if tag in self._tags])
+            tags_into_tokenized_content.append([tag for tag in sent if tag in TAGS])
         for tags_by_sent in tags_into_tokenized_content:
             bigrams_of_tags_by_sent.append(bigrams(tags_by_sent))
             ordered_tags_by_sent.append(list(OrderedSet(tags_by_sent)))
@@ -83,7 +82,9 @@ class YakinduParser(object):
             indexes_of_ordered_tags_by_process.append([])
         for i in range(len(ordered_tags_by_sent)):
             for tag in ordered_tags_by_sent[i]:
-                indexes_of_ordered_tags_by_process[i].extend([index for index, label in enumerate(self.tokenized_content[i]) if label == tag])
+                indexes_of_ordered_tags_by_process[i].extend([index for index, \
+                                                            label in enumerate(self.tokenized_content[i]) \
+                                                            if label == tag])
         return indexes_of_ordered_tags_by_process
         
     def _sort_tag_indexes_bigrams(self):
@@ -108,9 +109,11 @@ class YakinduParser(object):
         
     def _create_lean_content(self):
         lean_content = []
-        tagged_content = self._take_tagged_content(self._sort_tag_indexes_bigrams(), self.tokenized_content)
+        tagged_content = self._take_tagged_content(self._sort_tag_indexes_bigrams(), \
+                                                   self.tokenized_content)
         for sent_tagged_content in tagged_content:
-            lean_content.append([tag_content_tuple for tag_content_tuple in sent_tagged_content if tag_content_tuple != ['end',]])
+            lean_content.append([tag_content_tuple for tag_content_tuple in \
+                                sent_tagged_content if tag_content_tuple != ['end',]])
         while [] in lean_content:
             lean_content.remove([])
         return lean_content
@@ -131,7 +134,8 @@ class YakinduParser(object):
                 cleaned_pos_tagged_content.append([w for (w, t) in chunk if t not in verb_tags])
             else:
                 if chunk[0][0] == 'transition':
-                    cleaned_pos_tagged_content.append([lemmatizer.lemmatize(w) if t in verb_tags else w for (w, t) in chunk])
+                    cleaned_pos_tagged_content.append([lemmatizer.lemmatize(w) if t in verb_tags \
+                                                      else w for (w, t) in chunk])
                 else:
                     cleaned_pos_tagged_content.append([w for (w, t) in chunk])
         return cleaned_pos_tagged_content
@@ -143,7 +147,6 @@ class YakinduParser(object):
         return cleaned_content
     
     def exchange_states(self):
-        self._remove_directory()
         content = []
         state_tags = ['state', 'final_state']
         final_content = self._create_cleaned_content()
@@ -172,7 +175,8 @@ class YakinduParser(object):
         for sent in self.exchange_states():
              for chunk in sent:
                  if chunk[0] == 'specification':
-                     specification.append(trigrams([chunk[1], chunk[-2], self._convert_to_yakindu_type(type(chunk[-1]).__name__)]))
+                     specification.append(trigrams([chunk[1], chunk[-2], \
+                                        self._convert_to_yakindu_type(type(chunk[-1]).__name__)]))
         default_specification = list(OrderedSet(chain(*specification)))
         objects_specification = modified_groupby(default_specification, key=lambda obj: obj[0])
         for obj, specification_chunks in objects_specification.items():
@@ -189,7 +193,8 @@ class YakinduParser(object):
         for k, transition_chunks in events_interface.items():
             for chunk in transition_chunks:
                 transition_events_interface.append(chunk[1:])
-        formated_transition_events_interface = map(lambda event: '\nin event ' + ''.join(event), transition_events_interface)
+        formated_transition_events_interface = map(lambda event: '\nin event ' + \
+                                                   ''.join(event), transition_events_interface)
         return '\n\ninterface:' + ''.join(formated_transition_events_interface)
 
     def create_default_specification(self):
@@ -215,7 +220,9 @@ class YakinduParser(object):
         specification = []
         states_specification_content = []
         for sent in self.exchange_states():
-            specification.append([list(chain(*trigrams([chunk[1] + '{0}', chunk[-2] + ' {1} ', str(chunk[-1]).lower() + '{2}{3}']))) for chunk in sent if chunk[0] == 'specification'])
+            specification.append([list(chain(*trigrams([chunk[1] + '{0}', chunk[-2] + \
+                                ' {1} ', str(chunk[-1]).lower() + '{2}{3}']))) \
+                                for chunk in sent if chunk[0] == 'specification'])
         while [] in specification:
             specification.remove([])
         for spec in specification:
@@ -233,24 +240,34 @@ class YakinduParser(object):
 
     def create_states_specification_interface(self):
         states_specification_interface = self.create_states_specification()
-        specification_interface_process = '{1}State %s = SGraphFactory.eINSTANCE.createState();\n{1}%s.setName("%s"); \n{1}%s.setSpecification({0}); \n{1}region.getVertices().add(%s); \n{1}Node %sNode = ViewService.createNode(\n{1}getRegionCompartmentView(regionView), %s,\n{1}SemanticHints.STATE, preferencesHint);\n{1}setStateViewLayoutConstraint%s(%sNode);\n\n'
+        specification_interface_process = '{1}State %s = SGraphFactory.eINSTANCE.createState();'+\
+                                          '\n{1}%s.setName("%s"); \n{1}%s.setSpecification({0}); \n'+\
+                                          '{1}region.getVertices().add(%s); \n{1}Node %sNode = ViewService'+\
+                                          '.createNode(\n{1}getRegionCompartmentView(regionView), %s,\n'+\
+                                          '{1}SemanticHints.STATE, preferencesHint);\n{1}setStateViewLayoutConstraint'+\
+                                          '%s(%sNode);\n\n'
         for joined_state, specific_set_specification_content in states_specification_interface.items():
-            states_specification_interface[joined_state] = specification_interface_process.format(repr(specific_set_specification_content)[1:-1], 2 * self._indentation) % ((joined_state,)*9)
+            states_specification_interface[joined_state] = \
+            specification_interface_process.format(repr(specific_set_specification_content)\
+            [1:-1], 2 * self._indentation) % ((joined_state,)*9)
         return states_specification_interface
 
     def create_states_layout_methods(self):
         states = self._get_states_content()
         counter_x = 50
         aux_cont = 0
-
         counter_y = 60
         states_layout_list = []
+        phrase = '{0}private static void setStateViewLayoutConstraint%s'+\
+                 '(Node %sNode) {{\n{0}Bounds bounds%sNode = NotationFactory.'+\
+                 'eINSTANCE.createBounds();\n{0}bounds%sNode.setX(%d);\n{0}bounds'+\
+                 '%sNode.setY(%d);\n{0}%sNode.setLayoutConstraint(bounds%sNode);\n{0}}}\n\n'
         for state in states:
             aux_cont += 1
             if aux_cont == 2:
                 counter_x += 300
-            #import ipdb; ipdb.set_trace()
-            states_layout_list.append('{0}private static void setStateViewLayoutConstraint%s(Node %sNode) {{\n{0}Bounds bounds%sNode = NotationFactory.eINSTANCE.createBounds();\n{0}bounds%sNode.setX(%d);\n{0}bounds%sNode.setY(%d);\n{0}%sNode.setLayoutConstraint(bounds%sNode);\n{0}}}\n\n'.format(self._indentation) %(state, state, state, state, counter_x, state, counter_y, state, state))
+            states_layout_list.append(phrase.format(self._indentation) \
+            %(state, state, state, state, counter_x, state, counter_y, state, state))
         return states_layout_list
 
     def _get_initial_state(self):
@@ -269,8 +286,14 @@ class YakinduParser(object):
         for state in states_selected:
             initial_state_joined.append(''.join(state))
         initial_state_cleaned = set(initial_state_joined)
+        phrase = '{0}Transition transition = SGraphFactory.eINSTANCE.createTransition();\n'+\
+                 '{0}transition.setSource(initialState);\n{0}transition.setTarget(%s);\n{0}initialState'+\
+                 '.getOutgoingTransitions().add(transition);\n{0}ViewService.createEdge(initialStateView,'+\
+                 ' %sNode, transition,\n{0}SemanticHints.TRANSITION, preferencesHint);\n{0}Node textCompartment'+\
+                 ' = ViewService.createNode(diagram, statechart,\n{0}SemanticHints.STATECHART_TEXT, preferencesHint)'+\
+                 ';\n{0}setTextCompartmentLayoutConstraint(textCompartment);\n{0}}}\n\n'
         for state in initial_state_cleaned:
-            formated_initial_state_interface.append('{0}Transition transition = SGraphFactory.eINSTANCE.createTransition();\n{0}transition.setSource(initialState);\n{0}transition.setTarget(%s);\n{0}initialState.getOutgoingTransitions().add(transition);\n{0}ViewService.createEdge(initialStateView, %sNode, transition,\n{0}SemanticHints.TRANSITION, preferencesHint);\n{0}Node textCompartment = ViewService.createNode(diagram, statechart,\n{0}SemanticHints.STATECHART_TEXT, preferencesHint);\n{0}setTextCompartmentLayoutConstraint(textCompartment);\n{0}}}\n\n'.format(2 * self._indentation) %((state,)*2))
+            formated_initial_state_interface.append(phrase.format(2 * self._indentation) %((state,)*2))
         return formated_initial_state_interface
 
     def _get_sequence_transitions(self):
@@ -297,15 +320,18 @@ class YakinduParser(object):
 
     def create_transitions_interface(self):
         formated_transition_interface = []
+        phrase = '{0}Transition %s = SGraphFactory.eINSTANCE.createTransition();'+\
+                 '\n{0}%s.setSpecification("%s");\n{0}%s.setSource(%s);\n{0}%s.setTarget(%s);\n\n'
         for item in self._join_sequence_transitions():
-            formated_transition_interface.append('{0}Transition %s = SGraphFactory.eINSTANCE.createTransition();\n{0}%s.setSpecification("%s");\n{0}%s.setSource(%s);\n{0}%s.setTarget(%s);\n\n'.format(2 * self._indentation) %(item[1], item[1], item[1], item[1], item[0], item[1], item[2]))
+            formated_transition_interface.append(phrase.format(2 * self._indentation) \
+                %(item[1], item[1], item[1], item[1], item[0], item[1], item[2]))
         return formated_transition_interface
     
     def create_class_factory_utils(self):
         class_content = []
-        first_constant = open(self.root_path + '/src/first_constant.txt', 'r')
-        second_constant = open(self.root_path + '/src/second_constant.txt', 'r')
-        third_constant = open(self.root_path + '/src/third_constant.txt', 'r')
+        first_constant = open(self.root_path + '/parser/first_constant.txt', 'r')
+        second_constant = open(self.root_path + '/parser/second_constant.txt', 'r')
+        third_constant = open(self.root_path + '/parser/third_constant.txt', 'r')
         class_content.append(first_constant.read())
         class_content.append(self.create_default_specification())
         class_content.append(second_constant.read())
@@ -319,8 +345,7 @@ class YakinduParser(object):
         for state_layout in self.create_states_layout_methods():
             class_content.append(state_layout)
         class_content.append(third_constant.read())
-        class_factory_utils = open(self.root_path + '/src/FactoryUtils.java', 'w')
+        class_factory_utils = open(self.root_path + '/parser/FactoryUtils.java', 'w')
         for content in class_content:
             class_factory_utils.write(str(content))
         class_factory_utils.close()
-
