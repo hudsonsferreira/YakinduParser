@@ -202,7 +202,7 @@ class Yakindu_Spec(TestCase):
                                                                    ['state', 'refrigerator', 'door', 'closed']]])
     
     def test_states_were_exchanged(self):
-        self.parser.exchange_states() |should| equal_to([[['initial_state', 'refrigerator', 'door', 'closed'],
+        self.parser._exchange_states() |should| equal_to([[['initial_state', 'refrigerator', 'door', 'closed'],
                                                           ['specification', 'light', 'off', True],
                                                           ['specification', 'light', 'on', False],
                                                           ['specification', 'thermostat', 'power', 'minimum', True],
@@ -225,7 +225,7 @@ class Yakindu_Spec(TestCase):
         self.parser._create_events_interface() |should| equal_to('\n\ninterface:\nin event opendoor\nin event closedoor')
    
     def test_default_specifications_are_created(self):
-        self.parser.create_default_specification() |should| equal_to('        statechart.setSpecification'+\
+        self.parser._create_default_specification() |should| equal_to('        statechart.setSpecification'+\
                                                                      '("\\n\\ninterface light:\\nvar off:boolean\\nvar'+
                                                                      ' on:boolean\\n\\ninterface thermostat:\\nvar'+\
                                                                      ' minimum:boolean\\nvar maximum:boolean\\n\\n'+\
@@ -236,7 +236,7 @@ class Yakindu_Spec(TestCase):
         self.parser._get_states_content() |should| equal_to(['refrigeratordoorclosed', 'refrigeratordooropened'])
     
     def test_states_interface_was_created(self):
-        self.parser.create_states_specification_interface() \
+        self.parser._create_states_specification_interface() \
          |should| equal_to({'refrigeratordoorclosed': '        State refrigeratordoorclosed = SGraphFactory'+\
           '.eINSTANCE.createState();\n        refrigeratordoorclosed.setName("refrigeratordoorclosed"); \n   '+\
           '     refrigeratordoorclosed.setSpecification("entry/\\nlight.off = true;\\nlight.on = false;\\n'+\
@@ -257,7 +257,7 @@ class Yakindu_Spec(TestCase):
                                                             ['refrigerator', 'door', 'closed']])
 
     def test_initial_state_transition_was_created(self):
-        self.parser.create_initial_state_interface() |should| equal_to(['        Transition transition = '+\
+        self.parser._create_initial_state_interface() |should| equal_to(['        Transition transition = '+\
                                                                         'SGraphFactory.eINSTANCE.createTransition();'+\
                                                                         '\n        transition.setSource(initialState);'+\
                                                                         '\n        transition.setTarget'+\
@@ -289,7 +289,7 @@ class Yakindu_Spec(TestCase):
                                                                     'refrigeratordoorclosed']])
     
     def test_transitions_interface_were_created(self):
-        self.parser.create_transitions_interface() |should| equal_to(['        Transition opendoor = '+\
+        self.parser._create_transitions_interface() |should| equal_to(['        Transition opendoor = '+\
                                                                       'SGraphFactory.eINSTANCE.createTransition();'+\
                                                                       '\n        opendoor.setSpecification("opendoor");'+\
                                                                       '\n        opendoor.setSource(refrigeratordoorclosed);'+\
@@ -298,11 +298,11 @@ class Yakindu_Spec(TestCase):
                                                                       'SGraphFactory.eINSTANCE.createTransition();'+\
                                                                       '\n        closedoor.setSpecification("closedoor");'+\
                                                                       '\n        closedoor.setSource(refrigeratordooropened);'+\
-                                                                      '\n        closedoor.setTarget(refrigeratordoorclosed);+'
+                                                                      '\n        closedoor.setTarget(refrigeratordoorclosed);'+\
                                                                       '\n\n'])
 
     def test_states_layout_methods_were_created(self):
-        self.parser.create_states_layout_methods() |should| equal_to(['    private static void '+\
+        self.parser._create_states_layout_methods() |should| equal_to(['    private static void '+\
                                                                       'setStateViewLayoutConstraintrefrigeratordoorclosed'+\
                                                                       '(Node refrigeratordoorclosedNode) '+\
                                                                       '{\n    Bounds boundsrefrigeratordoorclosedNode '+\

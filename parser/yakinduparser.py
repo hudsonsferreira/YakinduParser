@@ -146,7 +146,7 @@ class YakinduParser(object):
             cleaned_content.append(self._clean_pos_tagged_content(sent))
         return cleaned_content
     
-    def exchange_states(self):
+    def _exchange_states(self):
         content = []
         state_tags = ['state', 'final_state']
         final_content = self._create_cleaned_content()
@@ -172,7 +172,7 @@ class YakinduParser(object):
     def _create_objects_interface(self):
         formated_objects_interface = []
         specification = []
-        for sent in self.exchange_states():
+        for sent in self._exchange_states():
              for chunk in sent:
                  if chunk[0] == 'specification':
                      specification.append(trigrams([chunk[1], chunk[-2], \
@@ -187,7 +187,7 @@ class YakinduParser(object):
 
     def _create_events_interface(self):
         transition_events_interface = []
-        flat_final_content = list(chain(*self.exchange_states()))
+        flat_final_content = list(chain(*self._exchange_states()))
         sub_sent = [chunk for chunk in flat_final_content if chunk[0] == 'transition']
         events_interface = modified_groupby(sub_sent, key=lambda chunk: chunk[0])
         for k, transition_chunks in events_interface.items():
@@ -197,7 +197,7 @@ class YakinduParser(object):
                                                    ''.join(event), transition_events_interface)
         return '\n\ninterface:' + ''.join(formated_transition_events_interface)
 
-    def create_default_specification(self):
+    def _create_default_specification(self):
         set_specification_method = 2 * self._indentation + 'statechart.setSpecification('
         objects_interface = self._create_objects_interface()
         events_interface = self._create_events_interface()
@@ -208,18 +208,18 @@ class YakinduParser(object):
         state_tags = ['initial_state', 'state', 'final_state']
         states_interface = []
         states_interface_capitalized = []
-        for sent in self.exchange_states():
+        for sent in self._exchange_states():
             for chunk in sent:
                 if chunk[0] in state_tags:
                     states_interface.append(''.join(chunk[1:]))
         joined_states = list(OrderedSet(states_interface))      
         return joined_states
 
-    def create_states_specification(self):
+    def _create_states_specification(self):
         states = []
         specification = []
         states_specification_content = []
-        for sent in self.exchange_states():
+        for sent in self._exchange_states():
             specification.append([list(chain(*trigrams([chunk[1] + '{0}', chunk[-2] + \
                                 ' {1} ', str(chunk[-1]).lower() + '{2}{3}']))) \
                                 for chunk in sent if chunk[0] == 'specification'])
@@ -238,8 +238,8 @@ class YakinduParser(object):
         return states_specification
 
 
-    def create_states_specification_interface(self):
-        states_specification_interface = self.create_states_specification()
+    def _create_states_specification_interface(self):
+        states_specification_interface = self._create_states_specification()
         specification_interface_process = '{1}State %s = SGraphFactory.eINSTANCE.createState();'+\
                                           '\n{1}%s.setName("%s"); \n{1}%s.setSpecification({0}); \n'+\
                                           '{1}region.getVertices().add(%s); \n{1}Node %sNode = ViewService'+\
@@ -252,7 +252,7 @@ class YakinduParser(object):
             [1:-1], 2 * self._indentation) % ((joined_state,)*9)
         return states_specification_interface
 
-    def create_states_layout_methods(self):
+    def _create_states_layout_methods(self):
         states = self._get_states_content()
         counter_x = 50
         aux_cont = 0
@@ -272,13 +272,13 @@ class YakinduParser(object):
 
     def _get_initial_state(self):
         initial_state_list = []
-        for sent in self.exchange_states():
+        for sent in self._exchange_states():
             for chunk in sent:
                 if chunk[0] == 'initial_state':
                     initial_state_list.append(chunk[1:])
         return initial_state_list
 
-    def create_initial_state_interface(self):
+    def _create_initial_state_interface(self):
         formated_initial_state_interface = []
         initial_state_joined = []
         initial_state_cleaned = []
@@ -300,7 +300,7 @@ class YakinduParser(object):
         state_tags = ['initial_state', 'state', 'final_state']
         list_sequence = []
         list_transitions = []
-        for sent in self.exchange_states():
+        for sent in self._exchange_states():
             for chunk in sent:
                 if chunk[0] in state_tags or chunk[0] == 'transition':
                     list_sequence.append(chunk[1:])
@@ -318,7 +318,7 @@ class YakinduParser(object):
             interface_transitions_joined.append(list(sequence_joined[i-2:i+1]))
         return interface_transitions_joined
 
-    def create_transitions_interface(self):
+    def _create_transitions_interface(self):
         formated_transition_interface = []
         phrase = '{0}Transition %s = SGraphFactory.eINSTANCE.createTransition();'+\
                  '\n{0}%s.setSpecification("%s");\n{0}%s.setSource(%s);\n{0}%s.setTarget(%s);\n\n'
@@ -333,16 +333,16 @@ class YakinduParser(object):
         second_constant = open(self.root_path + '/parser/second_constant.txt', 'r')
         third_constant = open(self.root_path + '/parser/third_constant.txt', 'r')
         class_content.append(first_constant.read())
-        class_content.append(self.create_default_specification())
+        class_content.append(self._create_default_specification())
         class_content.append(second_constant.read())
-        states_specification_interface = self.create_states_specification_interface()
+        states_specification_interface = self._create_states_specification_interface()
         for state, specification in states_specification_interface.items():
             class_content.append(states_specification_interface[state])
-        for transition in self.create_transitions_interface():
+        for transition in self._create_transitions_interface():
             class_content.append(transition)
-        for initial_state in self.create_initial_state_interface():
+        for initial_state in self._create_initial_state_interface():
             class_content.append(initial_state)
-        for state_layout in self.create_states_layout_methods():
+        for state_layout in self._create_states_layout_methods():
             class_content.append(state_layout)
         class_content.append(third_constant.read())
         class_factory_utils = open(self.root_path + '/parser/FactoryUtils.java', 'w')
