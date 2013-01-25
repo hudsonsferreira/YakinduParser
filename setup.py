@@ -9,8 +9,8 @@ setup(name='yakinduparser',
       long_description=readme,
       classifiers=[], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
       keywords='parser odt fsm python',
-      authors='Hudson Ferreira', "Eduardo Carvalho"
-      authors_email='silvaferreira.hsf@gmail.com', 'eduardo.oak80@gmail.com'
+      authors='Hudson Ferreira, Eduardo Carvalho'
+      authors_email='silvaferreira.hsf@gmail.com, eduardo.oak80@gmail.com'
       url='',
       license='',
       packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
