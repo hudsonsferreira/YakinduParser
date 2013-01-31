@@ -9,7 +9,7 @@ The goal of "YakinduParser" is to detect Finite-State Machine annotations in a o
 
 Installing:
 
-    >>> [sudo] python setup.py develop
+    >>> [sudo] python setup.py install
 
 Running tests:
 
