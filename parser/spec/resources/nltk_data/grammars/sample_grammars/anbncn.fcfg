@@ -1,0 +1,10 @@
+## Grammar for the non-context-free a^nb^nc^n language. 
+
+% start S
+S -> A[N=?n] B[N=?n] C[N=?n]
+A[N=(x)] -> 'a'
+A[N=(x+?n)] -> A[N=(x)] A[N=?n]
+B[N=(x)] -> 'b'
+B[N=(x+?n)] -> B[N=(x)] B[N=?n]
+C[N=(x)] -> 'c'
+C[N=(x+?n)] -> C[N=(x)] C[N=?n]
