@@ -7,20 +7,20 @@ from parser.yakinduparser import YakinduParser
 class Yakindu_Spec(TestCase):
 
     def setUp(self):
-        self.parser = YakinduParser('parser/spec/resources/refrigerator.odt')
+        self.parser = YakinduParser('spec/resources/refrigerator.odt')
     
     def test_file_exists(self):
-        (YakinduParser, 'parser/spec/resources/refrigerator.odt') |should_not| throw(NameError)
+        (YakinduParser, 'spec/resources/refrigerator.odt') |should_not| throw(NameError)
 
     def test_file_not_exists(self):
-        (YakinduParser, 'parser/spec/resources/not_exist') |should| throw(NameError)
+        (YakinduParser, 'spec/resources/not_exist') |should| throw(NameError)
     
     def test_file_is_valid(self):
-        (YakinduParser, 'parser/spec/resources/trabalho-fsi.pdf') |should| throw(NameError)
+        (YakinduParser, 'spec/resources/trabalho-fsi.pdf') |should| throw(NameError)
 
     def test_content_was_extracted(self):
-        self.parser._clean_content() |should| equal_to('initially the initial_state refrigerator '+\
-                                                        'door is closed end , consequently the  '+\
+        self.parser._clean_content() |should| equal_to('initially the  initial_state  refrigerator '+\
+                                                        'door is closed end  , consequently the  '+\
                                                         'specification  light off is true end  and the  '+\
                                                         'specification  light on is false end  ; '+\
                                                         'the specification  thermostat power minimum is '+\
@@ -323,7 +323,7 @@ class Yakindu_Spec(TestCase):
  
     def test_class_FactoryUtils_was_created(self):
         self.parser.create_class_factory_utils()
-        exists("../yakinduparser/parser/FactoryUtils.java") |should| equal_to(True)
+        exists("/home/hudson/projetos/yakinduparser/parser/FactoryUtils.java") |should| equal_to(True)
         
 if __name__ == '__main__':
     unittest.main()
