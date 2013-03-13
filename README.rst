@@ -14,7 +14,9 @@ Installing NLTK-data:
     >>> python
     >>> import nltk
     >>> nltk.dowload()
-    It must appears a GUI, and then you can select conll2000 or download whatever you want.
+
+It must appears a GUI, and then you can select conll2000 or download whatever you want.
+
 Installing:
     >>> [sudo] python setup.py install
 
