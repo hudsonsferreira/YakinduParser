@@ -9,6 +9,8 @@ The goal of "YakinduParser" is to detect Finite-State Machine annotations in a o
 
 Installing:
 
+ - Note: As a dependency you must have installed NLTK-Trainer and take care of the path that makes references to the tagger conll2000_aubt.pickle in  in yakinduparser.py file, check NLTK-Trainer documentation to understand it better: http://nltk-trainer.readthedocs.org/en/latest/train_tagger.html
+
     >>> [sudo] python setup.py install
 
 Running tests:

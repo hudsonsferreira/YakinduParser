@@ -120,7 +120,7 @@ class YakinduParser(object):
 
     def _pos_tag_lean_content(self):
         pos_tagged_content = []
-        tagger = load(self.root_path + '/yakinduparser/parser/spec/resources/nltk_data/'+\
+        tagger = load(self.root_path + '/nltk_data/'+\
                                        'taggers/conll2000_aubt.pickle')
         for sent in self._create_lean_content():
             pos_tagged_content.append(tagger.batch_tag(sent))
