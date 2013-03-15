@@ -232,7 +232,7 @@ class Yakindu_Spec(TestCase):
                                                                      'interface:\\nin event opendoor\\nin event'+\
                                                                      ' closedoor");\n\n    ')
         
-    def test_states_were_taked(self):
+    def test_states_were_taken(self):
         self.parser._get_states_content() |should| equal_to(['refrigeratordoorclosed', 'refrigeratordooropened'])
     
     def test_states_interface_was_created(self):
@@ -252,7 +252,7 @@ class Yakindu_Spec(TestCase):
           ' refrigeratordooropened,\n        SemanticHints.STATE, preferencesHint);\n        '+\
           'setStateViewLayoutConstraintrefrigeratordooropened(refrigeratordooropenedNode);\n\n'})
     
-    def test_initial_state_was_taked(self):
+    def test_initial_state_was_taken(self):
         self.parser._get_initial_state() |should| equal_to([['refrigerator', 'door', 'closed'],
                                                             ['refrigerator', 'door', 'closed']])
 
@@ -274,7 +274,7 @@ class Yakindu_Spec(TestCase):
                                                                         '\n        setTextCompartmentLayoutConstraint'+\
                                                                         '(textCompartment);\n        }\n\n'])
     
-    def test_sequence_transitions_were_taked(self):
+    def test_sequence_transitions_were_taken(self):
         self.parser._get_sequence_transitions() |should| equal_to([[['refrigerator', 'door', 'closed'],
                                                                     ['open', 'door'],
                                                                     ['refrigerator', 'door', 'opened']],
