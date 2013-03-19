@@ -9,7 +9,8 @@ class SpecGenerator(YakinduParser):
        YakinduParser.__init__(self, path)
 
     def create_states_test_interface(self):
-        pharse = "states_list = []\n"+\
+        pharse = "def test_there_are_at_least_two_states(self):\n"+\
+        "states_list = []\n"+\
         "states_list = self.spec_generator._get_states_content()\n"+\
         "states_list |should_not| be_empty\n"+\
         "states_list |should| be_greater_than_or_equal_to(%d)\n"+\
@@ -22,7 +23,8 @@ class SpecGenerator(YakinduParser):
         return final_pharse
 
     def create_initial_state_test_interface(self):
-        pharse = "initial_state_list = []\n"+\
+        pharse = "def test_there_is_a_initial_state(self):\n"+\
+        "initial_state_list = []\n"+\
         "initial_state_list = self.spec_generator._clean_initial_state()\n"+\
         "initial_state_list |should_not| be_empty\n"+\
         "initial_state_list |should| equal_to(%s)"
@@ -33,7 +35,8 @@ class SpecGenerator(YakinduParser):
         return final_pharse
 
     def create_sequence_transitions_test_interface(self):
-        pharse = "sequence_transitions_list = []\n"+\
+        pharse = "def test_sequence_transitions(self):\n"+\
+        "sequence_transitions_list = []\n"+\
         "sequence_transitions_list = self.spec_generator._join_sequence_transitions()\n"+\
         "sequence_transitions_list |should_not| be_empty\n"+\
         "sequence_transitions_list |should| be_greater_than_or_equal_to(%d)\n"+\
