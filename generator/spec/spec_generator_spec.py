@@ -21,11 +21,9 @@ class SpecGenerator_Spec(TestCase):
 
     def test_there_is_a_initial_state(self):
         initial_state_list = []
-        initial_state_list = self.spec_generator._get_initial_state()
+        initial_state_list = self.spec_generator._clean_initial_state()
         initial_state_list |should_not| be_empty
-        initial_state_list |should| be_greater_than_or_equal_to(1)
-        initial_state_list |should| equal_to([['refrigerator', 'door', 'closed'],
-                                              ['refrigerator', 'door', 'closed']])
+        initial_state_list |should| equal_to(set(['refrigeratordoorclosed']))
 
     def test_sequence_transitions(self):
         sequence_transitions_list = []
@@ -41,3 +39,9 @@ class SpecGenerator_Spec(TestCase):
         "states_list |should_not| be_empty\n"+\
         "states_list |should| be_greater_than_or_equal_to(2)\n"+\
         "states_list |should| equal_to(['refrigeratordoorclosed', 'refrigeratordooropened'])")
+
+    def test_initial_state_test_interface(self):
+        self.spec_generator.create_initial_state_test_interface() |should| equal_to("initial_state_list = []\n"+\
+        "initial_state_list = self.spec_generator._clean_initial_state()\n"+\
+        "initial_state_list |should_not| be_empty\n"+\
+        "initial_state_list |should| equal_to(set(['refrigeratordoorclosed']))")

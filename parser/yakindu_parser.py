@@ -278,21 +278,24 @@ class YakinduParser(object):
                     initial_state_list.append(chunk[1:])
         return initial_state_list
 
-    def _create_initial_state_interface(self):
-        formated_initial_state_interface = []
+    def _clean_initial_state(self):
         initial_state_joined = []
         initial_state_cleaned = []
         states_selected = self._get_initial_state()
         for state in states_selected:
             initial_state_joined.append(''.join(state))
         initial_state_cleaned = set(initial_state_joined)
+        return initial_state_cleaned
+
+    def _create_initial_state_interface(self):
+        formated_initial_state_interface = []
         phrase = '{0}Transition transition = SGraphFactory.eINSTANCE.createTransition();\n'+\
                  '{0}transition.setSource(initialState);\n{0}transition.setTarget(%s);\n{0}initialState'+\
                  '.getOutgoingTransitions().add(transition);\n{0}ViewService.createEdge(initialStateView,'+\
                  ' %sNode, transition,\n{0}SemanticHints.TRANSITION, preferencesHint);\n{0}Node textCompartment'+\
                  ' = ViewService.createNode(diagram, statechart,\n{0}SemanticHints.STATECHART_TEXT, preferencesHint)'+\
                  ';\n{0}setTextCompartmentLayoutConstraint(textCompartment);\n{0}}}\n\n'
-        for state in initial_state_cleaned:
+        for state in self._clean_initial_state():
             formated_initial_state_interface.append(phrase.format(2 * self._indentation) %((state,)*2))
         return formated_initial_state_interface
 
