@@ -1,0 +1,10 @@
+from package org.yakindu.sct.ui.editor.factories import FactoryUtils.java
+from unittest import TestCase
+from should_dsl import should, should_not
+from spec_generator import SpecGenerator
+
+
+class SpecGenerator_Spec(TestCase):
+
+    def setUp(self):
+        self.spec_generator = SpecGenerator('/home/hudson/projetos/yakinduparser/parser/spec/resources/refrigerator.odt')
