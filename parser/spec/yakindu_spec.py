@@ -1,7 +1,10 @@
+import sys
+sys.path.append("/home/hudson/projetos/yakinduparser/parser")
+
 from os.path import basename, dirname, exists
 from unittest import TestCase
 from should_dsl import should, should_not
-from parser.yakindu_parser import YakinduParser
+from yakindu_parser import YakinduParser
 
 
 class Yakindu_Spec(TestCase):
@@ -233,6 +236,8 @@ class Yakindu_Spec(TestCase):
                                                                      ' closedoor");\n\n    ')
         
     def test_states_were_taken(self):
+        self.parser._get_states_content()|should_not| be_empty
+        self.parser._get_states_content() |should| be_greater_than_or_equal_to(2)
         self.parser._get_states_content() |should| equal_to(['refrigeratordoorclosed', 'refrigeratordooropened'])
     
     def test_states_interface_was_created(self):
@@ -253,6 +258,8 @@ class Yakindu_Spec(TestCase):
           'setStateViewLayoutConstraintrefrigeratordooropened(refrigeratordooropenedNode);\n\n'})
     
     def test_initial_state_was_taken(self):
+        self.parser._get_initial_state() |should_not| be_empty
+        self.parser._get_initial_state() |should| be_greater_than_or_equal_to(1)
         self.parser._get_initial_state() |should| equal_to([['refrigerator', 'door', 'closed'],
                                                             ['refrigerator', 'door', 'closed']])
 
@@ -283,6 +290,8 @@ class Yakindu_Spec(TestCase):
                                                                     ['refrigerator', 'door', 'closed']]])
 
     def test_sequence_transitions_were_joined(self):
+        self.parser._join_sequence_transitions() |should_not| be_empty
+        self.parser._join_sequence_transitions() |should| be_greater_than_or_equal_to(1)
         self.parser._join_sequence_transitions() |should| equal_to([['refrigeratordoorclosed', 'opendoor',
                                                                      'refrigeratordooropened'],
                                                                     ['refrigeratordooropened', 'closedoor',
