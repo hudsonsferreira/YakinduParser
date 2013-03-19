@@ -45,3 +45,11 @@ class SpecGenerator_Spec(TestCase):
         "initial_state_list = self.spec_generator._clean_initial_state()\n"+\
         "initial_state_list |should_not| be_empty\n"+\
         "initial_state_list |should| equal_to(set(['refrigeratordoorclosed']))")
+
+    def test_sequence_transitions_test_interface(self):
+        self.spec_generator.create_sequence_transitions_test_interface() |should| equal_to("sequence_transitions_list = []\n"+\
+        "sequence_transitions_list = self.spec_generator._join_sequence_transitions()\n"+\
+        "sequence_transitions_list |should_not| be_empty\n"+\
+        "sequence_transitions_list |should| be_greater_than_or_equal_to(2)\n"+\
+        "sequence_transitions_list |should| equal_to([['refrigeratordoorclosed', 'opendoor', 'refrigeratordooropened'], "+\
+                                                     "['refrigeratordooropened', 'closedoor', 'refrigeratordoorclosed']])")

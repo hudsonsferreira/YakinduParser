@@ -31,3 +31,16 @@ class SpecGenerator(YakinduParser):
         initial_state_list = self._clean_initial_state()
         final_pharse = pharse %(initial_state_list)
         return final_pharse
+
+    def create_sequence_transitions_test_interface(self):
+        pharse = "sequence_transitions_list = []\n"+\
+        "sequence_transitions_list = self.spec_generator._join_sequence_transitions()\n"+\
+        "sequence_transitions_list |should_not| be_empty\n"+\
+        "sequence_transitions_list |should| be_greater_than_or_equal_to(%d)\n"+\
+        "sequence_transitions_list |should| equal_to(%s)"
+
+        sequence_transitions_list = []
+        sequence_transitions_list = self._join_sequence_transitions()
+        length = len(sequence_transitions_list)
+        final_pharse  = pharse %(length, sequence_transitions_list)
+        return final_pharse
