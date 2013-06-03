@@ -163,6 +163,15 @@ class YakinduParser(object):
                         chunk[chunk.index(word)] = False
         return final_content
 
+    def _verify_specification_components(self):
+        specification_list = []
+        content = self._exchange_states()
+        for sentence in content:
+            for item in sentence:
+                if item[0] == 'specification':
+                    specification_list.append(item)
+        return specification_list
+
     def _convert_to_yakindu_type(self, term):
         python_types = ['int', 'float', 'bool', 'str', 'NoneType']
         yakindu_types = ['integer', 'real', 'boolean', 'string', 'void']
