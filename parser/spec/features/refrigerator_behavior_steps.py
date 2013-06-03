@@ -14,7 +14,7 @@ def given_the_refrigerator_door_is_closed(step):
     world.state_machine._get_initial_state() |should_not| be_empty
     world.state_machine._get_initial_state() |should| be_greater_than(1)
     world.state_machine._get_initial_state() |should| equal_to([['refrigerator', 'door', 'closed'],
-                                                         ['refrigerator', 'door', 'closed']])
+                                                                ['refrigerator', 'door', 'closed']])
 
 @step(u'And the light off is true')
 def and_the_light_off_is_true(step):
