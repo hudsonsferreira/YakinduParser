@@ -220,13 +220,14 @@ class Yakindu_Spec(TestCase):
                                                           ['initial_state', 'refrigerator', 'door', 'closed']]])
 
     def test_specification_components(self):
-        self.parser._verify_specification_components() |should| equal_to([['specification', 'light', 'off', True],                                                                          ['specification', 'light', 'on', False],
-                                                                         ['specification', 'thermostat', 'power', 'minimum', True],
-                                                                         ['specification', 'thermostat', 'power', 'maximum', False],
-                                                                         ['specification', 'light', 'on', True],
-                                                                         ['specification', 'light', 'off', False],
-                                                                         ['specification', 'thermostat', 'power', 'maximum', True],
-                                                                         ['specification', 'thermostat', 'power', 'minimum', False]])
+        self.parser._verify_specification_components() |should| equal_to([['specification', 'light', 'off', True],
+                                                                          ['specification', 'light', 'on', False],
+                                                                          ['specification', 'thermostat', 'power', 'minimum', True],
+                                                                          ['specification', 'thermostat', 'power', 'maximum', False],
+                                                                          ['specification', 'light', 'on', True],
+                                                                          ['specification', 'light', 'off', False],
+                                                                          ['specification', 'thermostat', 'power', 'maximum', True],
+                                                                          ['specification', 'thermostat', 'power', 'minimum', False]])
     def test_objects_interface_are_created(self):
         self.parser._create_objects_interface() |should| equal_to('\n\ninterface light:\nvar off:boolean\nvar '+\
                                                                   'on:boolean\n\ninterface thermostat:\nvar '+\

@@ -15,18 +15,18 @@ Feature: Refrigerator Process Model
     Then refrigerator door is opened
     And the light off is false
     And the light on is true 
-    And the thermostat power minimum is false
     And the thermostat power maximum is true
+    And the thermostat power minimum is false
 
   Scenario: The refrigerator door is opened
     Given the refrigerator door is opened
-      And the light off is false
-      And the light on is true
-      And the thermostat power minimum is false
-      And the thermostat power maximum is true
-      When one closes the door
-      Then refrigerator door is closed
-      And the light off is true
-      And the light on is false 
-      And the thermostat power minimum is true
-      And the thermostat power maximum is false
+    And the light on is true
+    And the light off is false
+    And the thermostat power maximum is true
+    And the thermostat power minimum is false
+    When one closes the door
+    Then refrigerator door is closed
+    And the light off is true
+    And the light on is false 
+    And the thermostat power maximum is false
+    And the thermostat power minimum is true
