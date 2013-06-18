@@ -36,12 +36,12 @@ def and_the_thermostat_power_maximum_is_false(step):
 
 @step(u'When one opens the door')
 def when_one_opens_the_door(step):
-    world.transitions = (world.state_machine._get_sequence_transitions())
-    world.transitions[0][1] |should| equal_to(['open', 'door'])
+    world.sequence_transitions = world.state_machine._get_sequence_transitions()
+    world.sequence_transitions[0][1] |should| equal_to(['open', 'door'])
 
 @step(u'Then refrigerator door is opened')
 def then_refrigerator_door_is_opened(step):
-    world.transitions[0][2] |should| equal_to(['refrigerator', 'door', 'opened'])
+    world.sequence_transitions[0][2] |should| equal_to(['refrigerator', 'door', 'opened'])
     world.state_machine._get_states_content() |should_not| be_empty()
     world.state_machine._get_states_content() |should| be_greater_than_or_equal_to(2)
     world.state_machine._get_states_content() |should| contain('refrigeratordooropened')
@@ -86,13 +86,13 @@ def and_the_thermostat_power_minimum_is_false(step):
 
 @step(u'When one closes the door')
 def when_one_closes_the_door(step):
-    world.transitions = world.state_machine._get_sequence_transitions()
-    world.transitions[1][1] |should| equal_to(['close', 'door'])
+    world.sequence_transitions = world.state_machine._get_sequence_transitions()
+    world.sequence_transitions[1][1] |should| equal_to(['close', 'door'])
 
 @step(u'Then refrigerator door is closed')
 def then_refrigerator_door_is_closed(step):
     world.state_machine._get_states_content() |should| contain('refrigeratordoorclosed')
-    world.transitions[1][2] |should| equal_to(['refrigerator', 'door', 'closed'])  
+    world.sequence_transitions[1][2] |should| equal_to(['refrigerator', 'door', 'closed'])  
 
 @step(u'And the light off is true')
 def and_the_light_off_is_true(step):
