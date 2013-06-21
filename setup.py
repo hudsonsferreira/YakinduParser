@@ -21,6 +21,8 @@ setup(name='yakinduparser',
         "lxml",
         "specloud",
         "nltk",
-        "python-magic"
+        "python-magic",
+        "ipython",
+        "lettuce"
         ],
       )
