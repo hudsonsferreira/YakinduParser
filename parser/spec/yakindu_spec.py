@@ -1,10 +1,8 @@
-import sys
-sys.path.append("/home/hudson/projetos/yakinduparser/parser")
-
+import os
 from os.path import basename, dirname, exists
 from unittest import TestCase
 from should_dsl import should, should_not
-from yakindu_parser import YakinduParser
+from parser.yakindu_parser import YakinduParser
 
 
 class Yakindu_Spec(TestCase):
@@ -341,7 +339,7 @@ class Yakindu_Spec(TestCase):
  
     def test_class_FactoryUtils_was_created(self):
         self.parser.create_class_factory_utils()
-        exists("/home/hudson/projetos/yakinduparser/parser/FactoryUtils.java") |should| equal_to(True)
+        exists(os.getcwd().replace('/spec', '') + '/FactoryUtils.java') |should| equal_to(True)
         
 if __name__ == '__main__':
     unittest.main()

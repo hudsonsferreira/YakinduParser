@@ -1,13 +1,10 @@
-import sys
-sys.path.append("/home/hudson/projetos/yakinduparser/parser")
-
 from lettuce import *
 from should_dsl import should, should_not
-from yakindu_parser import YakinduParser
+from parser.yakindu_parser import YakinduParser
 
 @before.all
 def create_statemachine():
-	world.state_machine = YakinduParser('/home/hudson/projetos/yakinduparser/parser/spec/resources/refrigerator.odt')
+	world.state_machine = YakinduParser('../../../YakinduParser/parser/spec/resources/refrigerator.odt')
 
 @step(u'Given the refrigerator door is closed')
 def given_the_refrigerator_door_is_closed(step):
