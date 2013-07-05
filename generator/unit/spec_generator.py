@@ -1,8 +1,5 @@
-import sys
-sys.path.append("/home/hudson/projetos/yakinduparser/parser")
-
 import os
-from yakindu_parser import YakinduParser
+from parser.yakindu_parser import YakinduParser
 
 class SpecGenerator(YakinduParser):
 

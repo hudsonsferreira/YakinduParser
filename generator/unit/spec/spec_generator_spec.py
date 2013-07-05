@@ -1,16 +1,13 @@
-import sys
-sys.path.append("/home/hudson/projetos/yakinduparser/generator")
-
 from os.path import exists
 from unittest import TestCase
 from should_dsl import should, should_not
-from spec_generator import SpecGenerator
+from unit.spec_generator import SpecGenerator
 
 
 class SpecGenerator_Spec(TestCase):
 
     def setUp(self):
-        self.spec_generator = SpecGenerator('/home/hudson/projetos/yakinduparser/parser/spec/resources/refrigerator.odt')
+        self.spec_generator = SpecGenerator('../../../YakinduParser/parser/spec/resources/refrigerator.odt')
 
     def test_there_are_at_least_two_states(self):
         states_list = []
@@ -59,4 +56,4 @@ class SpecGenerator_Spec(TestCase):
 
     def test_if_file_was_created(self):
         self.spec_generator.create_test_file()
-        exists("/home/hudson/projetos/yakinduparser/generator/factory_utils_spec.py") |should| equal_to(True)
+        exists("../../../YakinduParser/generator/unit/factory_utils_spec.py") |should| equal_to(True)
