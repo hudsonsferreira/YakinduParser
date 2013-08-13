@@ -20,9 +20,9 @@ indicates inner insofar instead into inward is isn't it it'd it'll it's its itse
 j just k keep keeps kept know knows known l last lately later latter latterly least \
 less lest let let's like liked likely little look looking looks ltd m mainly many \
 may maybe me mean meanwhile merely might more moreover most mostly much must my myself \
-n name namely nd near nearly necessary need needs neither never nevertheless new \
+n name namely nd near nearly necessary need needs neither never nevertheless \
 next nine no nobody non none noone nor normally not nothing novel now nowhere o \
-obviously of often oh ok okay old once one ones only onto or other others \
+obviously of often oh ok okay once one ones only onto or other others \
 otherwise ought our ours ourselves out outside over overall own p particular particularly \
 per perhaps placed please plus possible presumably probably provides q que quite qv \
 r rather rd re really reasonably regarding regardless regards relatively respectively \

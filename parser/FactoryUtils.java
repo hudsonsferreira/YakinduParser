@@ -65,7 +65,7 @@ public final class FactoryUtils {
     public static void createStatechartModel(Resource resource,
             PreferencesHint preferencesHint) {
         Statechart statechart = SGraphFactory.eINSTANCE.createStatechart();
-        statechart.setSpecification("\n\ninterface light:\nvar off:boolean\nvar on:boolean\n\ninterface thermostat:\nvar minimum:boolean\nvar maximum:boolean\n\ninterface:\nin event opendoor\nin event closedoor");
+        statechart.setSpecification("\n\ninterface:\nin event canceled\nin event start\nin event includesproducts\nin event canceled\nin event confirmdata");
 
         String lastSegment = resource.getURI().lastSegment();
         String statechartName = lastSegment.substring(0,
@@ -95,57 +95,86 @@ public final class FactoryUtils {
         setInitialStateViewLayoutConstraint(initialStateView);
         
         
-        State refrigeratordoorclosed = SGraphFactory.eINSTANCE.createState();
-        refrigeratordoorclosed.setName("refrigeratordoorclosed"); 
-        refrigeratordoorclosed.setSpecification("entry/\nlight.off = true;\nlight.on = false;\nthermostat.minimum = true;\nthermostat.maximum = false"); 
-        region.getVertices().add(refrigeratordoorclosed); 
-        Node refrigeratordoorclosedNode = ViewService.createNode(
-        getRegionCompartmentView(regionView), refrigeratordoorclosed,
-        SemanticHints.STATE, preferencesHint);
-        setStateViewLayoutConstraintrefrigeratordoorclosed(refrigeratordoorclosedNode);
+        Transition canceled = SGraphFactory.eINSTANCE.createTransition();
+        canceled.setSpecification("canceled");
+        canceled.setSource(process);
+        canceled.setTarget(suspendedprocess);
 
-        State refrigeratordooropened = SGraphFactory.eINSTANCE.createState();
-        refrigeratordooropened.setName("refrigeratordooropened"); 
-        refrigeratordooropened.setSpecification("entry/\nlight.on = true;\nlight.off = false;\nthermostat.maximum = true;\nthermostat.minimum = false"); 
-        region.getVertices().add(refrigeratordooropened); 
-        Node refrigeratordooropenedNode = ViewService.createNode(
-        getRegionCompartmentView(regionView), refrigeratordooropened,
-        SemanticHints.STATE, preferencesHint);
-        setStateViewLayoutConstraintrefrigeratordooropened(refrigeratordooropenedNode);
+        Transition start = SGraphFactory.eINSTANCE.createTransition();
+        start.setSpecification("start");
+        start.setSource(suspendedprocess);
+        start.setTarget(process);
 
-        Transition opendoor = SGraphFactory.eINSTANCE.createTransition();
-        opendoor.setSpecification("opendoor");
-        opendoor.setSource(refrigeratordoorclosed);
-        opendoor.setTarget(refrigeratordooropened);
+        Transition includesproducts = SGraphFactory.eINSTANCE.createTransition();
+        includesproducts.setSpecification("includesproducts");
+        includesproducts.setSource(process);
+        includesproducts.setTarget(processactivated);
 
-        Transition closedoor = SGraphFactory.eINSTANCE.createTransition();
-        closedoor.setSpecification("closedoor");
-        closedoor.setSource(refrigeratordooropened);
-        closedoor.setTarget(refrigeratordoorclosed);
+        Transition canceled = SGraphFactory.eINSTANCE.createTransition();
+        canceled.setSpecification("canceled");
+        canceled.setSource(processactivated);
+        canceled.setTarget(suspendedprocess);
+
+        Transition activeprocess = SGraphFactory.eINSTANCE.createTransition();
+        activeprocess.setSpecification("activeprocess");
+        activeprocess.setSource(suspendedprocess);
+        activeprocess.setTarget(confirmdata);
 
         Transition transition = SGraphFactory.eINSTANCE.createTransition();
         transition.setSource(initialState);
-        transition.setTarget(refrigeratordoorclosed);
+        transition.setTarget(process);
         initialState.getOutgoingTransitions().add(transition);
-        ViewService.createEdge(initialStateView, refrigeratordoorclosedNode, transition,
+        ViewService.createEdge(initialStateView, processNode, transition,
         SemanticHints.TRANSITION, preferencesHint);
         Node textCompartment = ViewService.createNode(diagram, statechart,
         SemanticHints.STATECHART_TEXT, preferencesHint);
         setTextCompartmentLayoutConstraint(textCompartment);
         }
 
-    private static void setStateViewLayoutConstraintrefrigeratordoorclosed(Node refrigeratordoorclosedNode) {
-    Bounds boundsrefrigeratordoorclosedNode = NotationFactory.eINSTANCE.createBounds();
-    boundsrefrigeratordoorclosedNode.setX(50);
-    boundsrefrigeratordoorclosedNode.setY(60);
-    refrigeratordoorclosedNode.setLayoutConstraint(boundsrefrigeratordoorclosedNode);
+        Transition transition = SGraphFactory.eINSTANCE.createTransition();
+        transition.setSource(initialState);
+        transition.setTarget(suspendedprocess);
+        initialState.getOutgoingTransitions().add(transition);
+        ViewService.createEdge(initialStateView, suspendedprocessNode, transition,
+        SemanticHints.TRANSITION, preferencesHint);
+        Node textCompartment = ViewService.createNode(diagram, statechart,
+        SemanticHints.STATECHART_TEXT, preferencesHint);
+        setTextCompartmentLayoutConstraint(textCompartment);
+        }
+
+    private static void setStateViewLayoutConstraintprocess(Node processNode) {
+    Bounds boundsprocessNode = NotationFactory.eINSTANCE.createBounds();
+    boundsprocessNode.setX(50);
+    boundsprocessNode.setY(60);
+    processNode.setLayoutConstraint(boundsprocessNode);
     }
 
-    private static void setStateViewLayoutConstraintrefrigeratordooropened(Node refrigeratordooropenedNode) {
-    Bounds boundsrefrigeratordooropenedNode = NotationFactory.eINSTANCE.createBounds();
-    boundsrefrigeratordooropenedNode.setX(350);
-    boundsrefrigeratordooropenedNode.setY(60);
-    refrigeratordooropenedNode.setLayoutConstraint(boundsrefrigeratordooropenedNode);
+    private static void setStateViewLayoutConstraintsuspendedprocess(Node suspendedprocessNode) {
+    Bounds boundssuspendedprocessNode = NotationFactory.eINSTANCE.createBounds();
+    boundssuspendedprocessNode.setX(350);
+    boundssuspendedprocessNode.setY(60);
+    suspendedprocessNode.setLayoutConstraint(boundssuspendedprocessNode);
+    }
+
+    private static void setStateViewLayoutConstraintprocessactivated(Node processactivatedNode) {
+    Bounds boundsprocessactivatedNode = NotationFactory.eINSTANCE.createBounds();
+    boundsprocessactivatedNode.setX(350);
+    boundsprocessactivatedNode.setY(60);
+    processactivatedNode.setLayoutConstraint(boundsprocessactivatedNode);
+    }
+
+    private static void setStateViewLayoutConstraintactiveprocess(Node activeprocessNode) {
+    Bounds boundsactiveprocessNode = NotationFactory.eINSTANCE.createBounds();
+    boundsactiveprocessNode.setX(350);
+    boundsactiveprocessNode.setY(60);
+    activeprocessNode.setLayoutConstraint(boundsactiveprocessNode);
+    }
+
+    private static void setStateViewLayoutConstraintprocessfinished(Node processfinishedNode) {
+    Bounds boundsprocessfinishedNode = NotationFactory.eINSTANCE.createBounds();
+    boundsprocessfinishedNode.setX(350);
+    boundsprocessfinishedNode.setY(60);
+    processfinishedNode.setLayoutConstraint(boundsprocessfinishedNode);
     }
 
 
