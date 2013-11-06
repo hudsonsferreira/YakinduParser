@@ -2,7 +2,7 @@ import os
 from os.path import basename, dirname, exists
 from unittest import TestCase
 from should_dsl import should, should_not
-from parser.yakindu_parser import YakinduParser
+from YakinduParser.parser.yakindu_parser import YakinduParser
 
 
 class Yakindu_Spec(TestCase):

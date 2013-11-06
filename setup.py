@@ -5,7 +5,7 @@ readme = open('README.rst').read()
 
 setup(name='yakinduparser',
       version=version,
-      description="A parser that identifies notes at a .odt file, based on Finite-State Machine.",
+      description="A parser that identifies a Finite-State Machine in a requirements description.",
       long_description=readme,
       classifiers=[], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
       keywords='parser odt fsm python',
