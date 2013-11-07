@@ -35,3 +35,10 @@ from yakinduparser import YakinduParser
 parser = YakinduParser('/spec/resources/refrigerator.odt')
 parser.create_class_factory_utils()
 ```
+So, you will note that FactoryUtils.java file was generated. This class, is responsible to plot the Yakindu Statechart diagram.
+
+To install Yakindu on the dev mode, you can follow this [gist](https://gist.github.com/hudsonsferreira/5987720/ "Gist").
+
+We use Yakindu to do a quick requirements simulation and verify if the natural language is able to represent the system.
+
+![Alt text] (/parser/spec/resources/images/refrigerator_diagram.png)
