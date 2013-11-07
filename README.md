@@ -1,29 +1,37 @@
 =============
-YakinduParser
+YakinduParser(YP)
 =============
 
-The goal of "YakinduParser" is to detect Finite-State Machine annotations in a odt file and responsible for generates a class named FactoryUtils.java. This class is responsible for insert elements in a statechart diagram that belongs Yakindu. Yakindu Statechart Tools  is a DSL that provides an integrated modeling environment for the specification and development of reactive, event-driven systems based on the concept of statecharts.
+Detects Finite-State Machine in a requirements description.
+The goal of YP is to induce a new way to avoid ambiguity in software requirements.
 
-- Note: Check Yakindu website for more information: http://statecharts.org/
+Requeriments description in a .odt format:
+
+(You can found it in the resources directory)
 
 
+![Alt text] (/parser/spec/resources/images/refrigerator_requirements.png)
 
-- Note: As a dependency you must have installed NLTK-Trainer and take care of the path that makes references to the tagger conll2000_aubt.pickle in  in yakinduparser.py file, check NLTK-Trainer documentation to understand it better: http://nltk-trainer.readthedocs.org/en/latest/train_tagger.html
+As a dependency you must copy the some nltk_data modules do your home. You can run the bellow code:
+```
+cd YakinduParser
 
-Installing NLTK-data:
-    >>> python
-    >>> import nltk
-    >>> nltk.dowload()
+cp -r nltk_data ~/
+```
 
-It must appears a GUI, and then you can select conll2000 or download whatever you want.
 
 Installing:
-    >>> [sudo] python setup.py install
-
+```
+[sudo] python setup.py install
+```
 Running tests:
-    >>> specloud
+```
+specloud
+```
 
-Using:
-    >>> from yakinduparser import YakinduParser
-    >>> parser = YakinduParser('/spec/resources/refrigerator.odt')
-    >>> parser.create_class_factory_utils()
+Usage:
+```python
+from yakinduparser import YakinduParser
+parser = YakinduParser('/spec/resources/refrigerator.odt')
+parser.create_class_factory_utils()
+```
