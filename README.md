@@ -7,7 +7,7 @@ The goal of YP is to induce a new way to avoid ambiguity in software requirement
 
 Requeriments description in a .odt format:
 
-(You can found it in the resources directory)
+(You can find it in the resources directory)
 
 
 ![Alt text] (/parser/spec/resources/images/refrigerator_requirements.png)
