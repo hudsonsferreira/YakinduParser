@@ -12,7 +12,7 @@ Requeriments description in a .odt format:
 
 ![Alt text] (/parser/spec/resources/images/refrigerator_requirements.png)
 
-As a dependency you must copy the some nltk_data modules do your home. You can run the bellow code:
+As a dependency you must copy the some nltk_data modules to your home. You can run the bellow code:
 ```
 cd YakinduParser
 
